@@ -8,13 +8,13 @@ const ReactiveHash = () => {
 
   return (
     <>
-      <table>
+      <table className="m-auto">
         <tbody>
           <tr>
-            <th>
+            <th className="text-right">
               <label htmlFor="reactive-hash-raw-value">Raw value :</label>
             </th>
-            <td>
+            <td className="text-left">
               <input
                 data-testid="reactive-hash-raw-value"
                 id="reactive-hash-raw-value"
@@ -26,10 +26,10 @@ const ReactiveHash = () => {
           </tr>
 
           <tr>
-            <th>
+            <th className="text-right">
               <label htmlFor="reactive-hash-hashed-value">Hashed by node:crypto :</label>
             </th>
-            <td>
+            <td className="text-left">
               <input
                 data-testid="reactive-hash-hashed-value"
                 id="reactive-hash-hashed-value"
