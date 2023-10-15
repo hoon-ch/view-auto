@@ -1,9 +1,9 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { ipcRenderer } from "electron";
 
 // browserWindow에서 사용할 모듈
 type MessageCallback = (event: Electron.IpcRendererEvent, ...args: unknown[]) => void;
 
-const windowAPI = {
+export const main = {
   send: (channel: string, data?: unknown) => {
     ipcRenderer.send(channel, data);
   },
@@ -33,7 +33,7 @@ const windowAPI = {
 };
 
 // browserView에서 사용할 모듈
-const viewAPI = {
+export const view = {
   injectJS: (js: string) => {
     ipcRenderer.send("execute-js-in-browserview", js);
   },
@@ -47,6 +47,3 @@ const viewAPI = {
     });
   },
 };
-
-export const window = contextBridge.exposeInMainWorld("main", windowAPI);
-export const view = contextBridge.exposeInMainWorld("view", viewAPI);

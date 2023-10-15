@@ -4,4 +4,4 @@
 
 export { sha256sum } from "./nodeCrypto";
 export { versions } from "./versions";
-export { window, view } from "./contextBridge";
+export { main, view } from "./contextBridge";

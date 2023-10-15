@@ -5,6 +5,7 @@ import { useState } from "react";
 import Controller from "@/components/pages/Controller";
 // import { DevTools } from "jotai-devtools";
 // import { Button } from "./components/ui/button";
+import { main } from "#preload";
 
 const App = () => {
   const [windowSize, setWindowSize] = useState({ width: "100px", height: "100px" });
@@ -14,18 +15,18 @@ const App = () => {
   //     setWindowSize(event);
   //   };
 
-  //   const initialSize = window.main.getWindowSize();
+  //   const initialSize = main.getWindowSize();
   //   setWindowSize(initialSize);
 
-  //   window.main.on("window-resize", handleResize);
+  //   main.on("window-resize", handleResize);
 
   //   return () => {
-  //     window.main.off("window-resize", handleResize);
+  //     main.off("window-resize", handleResize);
   //   };
   // }, []);
 
   // const handleToggleView = () => {
-  //   window.main.toggleBrowserView();
+  //   main.toggleBrowserView();
   // };
 
   const appStyle = {

@@ -17,6 +17,7 @@ import { loginToWebsite } from "@/components/logic/generator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAtom } from "jotai";
 import { appState } from "@/lib/store";
+import { main } from "#preload";
 
 const formSchema = z.object({
   id: z.string().min(2).max(50),
@@ -26,9 +27,10 @@ const formSchema = z.object({
 type AccountInfo = z.infer<typeof formSchema>;
 
 const Login: React.FC = () => {
-  const accountInfo: AccountInfo | null = window.main.store.get(
+  const accountInfo: AccountInfo | null = main.store.get(
     "accountInfo",
-  ) as AccountInfo | null;
+  ) as unknown as AccountInfo | null;
+  console.log("🚀 ~ file: Login.tsx:33 ~ accountInfo:", accountInfo);
   const [, setAppState] = useAtom(appState);
 
   const form = useForm<AccountInfo>({
@@ -45,10 +47,10 @@ const Login: React.FC = () => {
 
     if (isSaveAccountInfo) {
       console.log("🚀 ~ file: Login.tsx:47 ~ onSubmit ~ isSaveAccountInfo:", isSaveAccountInfo);
-      window.main.store.set("accountInfo", values);
-      setTimeout(() => window.main.store.get("accountInfo"), 1000);
+      main.store.set("accountInfo", values);
+      setTimeout(() => main.store.get("accountInfo"), 1000);
     } else if (!isSaveAccountInfo && accountInfo) {
-      window.main.store.delete("accountInfo");
+      main.store.delete("accountInfo");
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars

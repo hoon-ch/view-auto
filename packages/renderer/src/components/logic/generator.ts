@@ -1,3 +1,5 @@
+import { view } from "#preload";
+
 type Login = {
   id: string;
   password: string;
@@ -42,7 +44,7 @@ const injectVariables = (elements: Elements): void => {
     .map(([name, element]) => generateJsQuery(name, element.selector!))
     .join("");
 
-  window.view.injectJS(queries);
+  view.injectJS(queries);
 };
 
 function loginToWebsite(login: Login) {
@@ -61,7 +63,7 @@ function loginToWebsite(login: Login) {
     }, 500);
   `;
 
-  window.view.injectJS(loginScript);
+  view.injectJS(loginScript);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   // return new Promise<boolean>(resolve => {
