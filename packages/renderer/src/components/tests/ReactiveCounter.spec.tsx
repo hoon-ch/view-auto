@@ -1,6 +1,6 @@
 import { render, screen, act } from "@testing-library/react";
 import { expect, test } from "vitest";
-import ReactiveCounter from "../ReactiveCounter";
+import ReactiveCounter from "../sample/ReactiveCounter";
 
 test("ReactiveHash component", async () => {
   render(<ReactiveCounter />);

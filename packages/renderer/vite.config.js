@@ -6,6 +6,8 @@ import { renderer } from "unplugin-auto-expose";
 import { join } from "node:path";
 import { injectAppVersion } from "../../version/inject-app-version-plugin.mjs";
 import svgr from "vite-plugin-svgr";
+import jotaiDebugLabel from "jotai/babel/plugin-debug-label";
+import jotaiReactRefresh from "jotai/babel/plugin-react-refresh";
 
 const PACKAGE_ROOT = __dirname;
 const PROJECT_ROOT = join(PACKAGE_ROOT, "../..");
@@ -21,6 +23,7 @@ const config = {
   resolve: {
     alias: {
       "@": join(PACKAGE_ROOT, "src"),
+      "@assets": join(PACKAGE_ROOT, "assets"),
     },
   },
   base: "",
@@ -47,7 +50,7 @@ const config = {
   },
   plugins: [
     svgr(),
-    react(),
+    react({ babel: { plugins: [jotaiDebugLabel, jotaiReactRefresh] } }),
     renderer.vite({
       preloadEntry: join(PACKAGE_ROOT, "../preload/src/index.ts"),
     }),

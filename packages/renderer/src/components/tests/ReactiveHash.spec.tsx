@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { expect, test, vi } from "vitest";
-import ReactiveHash from "../ReactiveHash";
+import ReactiveHash from "../sample/ReactiveHash";
 
 vi.mock("#preload", () => {
   return {

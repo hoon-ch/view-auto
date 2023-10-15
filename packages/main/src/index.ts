@@ -1,6 +1,8 @@
 import { app } from "electron";
 import "./security-restrictions";
 import { restoreOrCreateWindow } from "/@/mainWindow";
+import { createBrowserView, setBrowserViewSize, setCookieBeforeLoading } from "/@/browserView";
+import { initializeIpcHandlers } from "/@/ipcHandler";
 import { platform } from "node:process";
 
 /**
@@ -38,6 +40,12 @@ app.on("activate", restoreOrCreateWindow);
 app
   .whenReady()
   .then(restoreOrCreateWindow)
+  .then(mainWindow => {
+    const browserView = createBrowserView(mainWindow);
+    initializeIpcHandlers(browserView, mainWindow);
+    setCookieBeforeLoading(browserView);
+    setBrowserViewSize(mainWindow, browserView);
+  })
   .catch(e => console.error("Failed create window:", e));
 
 /**

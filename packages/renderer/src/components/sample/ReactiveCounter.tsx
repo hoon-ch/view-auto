@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Label } from "./ui/label";
+import { Label } from "../ui/label";
 
 const ReactiveCounter = () => {
   const [count, setCount] = useState(0);

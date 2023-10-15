@@ -1,11 +1,14 @@
 import { app, BrowserWindow } from "electron";
 import { join, resolve } from "node:path";
 
+const WINDOW_SIZE = { width: 1200, height: 800, minWidth: 1121, minHeight: 620 };
+
 async function createWindow() {
   const browserWindow = new BrowserWindow({
+    ...WINDOW_SIZE,
     show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
-      nodeIntegration: false,
+      nodeIntegration: true,
       contextIsolation: true,
       sandbox: false, // Sandbox disabled because the demo of preload script depend on the Node.js api
       webviewTag: false, // The webview tag is not recommended. Consider alternatives like an iframe or Electron's BrowserView. @see https://www.electronjs.org/docs/latest/api/webview-tag#warning
@@ -68,4 +71,5 @@ export async function restoreOrCreateWindow() {
   }
 
   window.focus();
+  return window;
 }

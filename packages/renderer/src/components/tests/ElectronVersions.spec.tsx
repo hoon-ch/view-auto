@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { expect, test, vi } from "vitest";
-import ElectronVersions from "../ElectronVersions";
+import ElectronVersions from "../sample/ElectronVersions";
 
 vi.mock("#preload", () => {
   return {

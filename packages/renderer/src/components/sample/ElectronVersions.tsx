@@ -1,5 +1,5 @@
 import { versions } from "#preload";
-import { Table, TableBody, TableRow, TableHead, TableCell, TableCaption } from "./ui/table";
+import { Table, TableBody, TableRow, TableHead, TableCell, TableCaption } from "../ui/table";
 
 const ElectronVersions = () => {
   return (
