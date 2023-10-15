@@ -1,25 +1,28 @@
 import { versions } from "#preload";
+import { Table, TableBody, TableRow, TableHead, TableCell, TableCaption } from "./ui/table";
 
 const ElectronVersions = () => {
   return (
     <>
-      <table
+      <Table
         className="m-auto"
         id="process-versions"
         data-testid="process-versions"
       >
-        <tbody>
+        <TableBody>
           {Object.entries(versions).map(({ "0": lib, "1": version }) => {
             return (
-              <tr key={lib}>
-                <th className="text-right">{lib} :</th>
-                <td className="text-left">v{version}</td>
-              </tr>
+              <TableRow key={lib}>
+                <TableHead className="text-right">{lib} :</TableHead>
+                <TableCell className="text-left">v{version}</TableCell>
+              </TableRow>
             );
           })}
-        </tbody>
-      </table>
-      <code>packages/renderer/src/components/ElectronVersions.tsx</code>
+        </TableBody>
+        <TableCaption>
+          <code>packages/renderer/src/components/ElectronVersions.tsx</code>
+        </TableCaption>
+      </Table>
     </>
   );
 };

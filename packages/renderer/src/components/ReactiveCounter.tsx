@@ -1,20 +1,24 @@
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Label } from "./ui/label";
 
 const ReactiveCounter = () => {
   const [count, setCount] = useState(0);
 
   return (
     <>
-      <button
+      <Button
         data-testid="button"
         onClick={() => setCount(c => c + 1)}
       >
         {" "}
         count is: {count}
-      </button>
+      </Button>
       <br />
       <br />
-      <code>packages/renderer/src/components/ReactiveCounter.tsx</code>
+      <Label>
+        <code>packages/renderer/src/components/ReactiveCounter.tsx</code>
+      </Label>
     </>
   );
 };

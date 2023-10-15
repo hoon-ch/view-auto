@@ -1,5 +1,15 @@
 import { sha256sum } from "#preload";
 import { useState } from "react";
+import {
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableCaption,
+} from "@/components/ui/table";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 const ReactiveHash = () => {
   const [rawString, setRawString] = useState("Hello World");
@@ -7,40 +17,42 @@ const ReactiveHash = () => {
 
   return (
     <>
-      <table className="m-auto">
-        <tbody>
-          <tr>
-            <th className="text-right">
-              <label htmlFor="reactive-hash-raw-value">Raw value :</label>
-            </th>
-            <td className="text-left">
-              <input
+      <Table className="m-auto">
+        <TableBody>
+          <TableRow>
+            <TableHead className="text-right">
+              <Label htmlFor="reactive-hash-raw-value">Raw value :</Label>
+            </TableHead>
+            <TableCell className="text-left">
+              <Input
                 data-testid="reactive-hash-raw-value"
                 id="reactive-hash-raw-value"
                 value={rawString}
                 onChange={e => setRawString(e.target.value)}
                 type="text"
               />
-            </td>
-          </tr>
+            </TableCell>
+          </TableRow>
 
-          <tr>
-            <th className="text-right">
-              <label htmlFor="reactive-hash-hashed-value">Hashed by node:crypto :</label>
-            </th>
-            <td className="text-left">
-              <input
+          <TableRow>
+            <TableHead className="text-right">
+              <Label htmlFor="reactive-hash-hashed-value">Hashed by node:crypto :</Label>
+            </TableHead>
+            <TableCell className="text-left">
+              <Input
                 data-testid="reactive-hash-hashed-value"
                 id="reactive-hash-hashed-value"
                 value={hashedString}
                 readOnly
                 type="text"
               />
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <code>packages/renderer/src/components/ReactiveHash.tsx</code>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+        <TableCaption>
+          <code>packages/renderer/src/components/ReactiveHash.tsx</code>
+        </TableCaption>
+      </Table>
     </>
   );
 };
