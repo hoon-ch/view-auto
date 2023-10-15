@@ -1,6 +1,5 @@
 import { sha256sum } from "#preload";
 import { useState } from "react";
-import "./ReactiveHash.css";
 
 const ReactiveHash = () => {
   const [rawString, setRawString] = useState("Hello World");
