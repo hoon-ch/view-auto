@@ -12,6 +12,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        nxGothic: ["NEXON Lv2 Gothic", "Inter", "sans-serif"],
+        nxGothicBold: ["NEXON Lv2 Gothic Bold", "Inter", "sans-serif"],
+        nxGothicLight: ["NEXON Lv2 Gothic Light", "Inter", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
