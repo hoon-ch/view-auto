@@ -15,7 +15,7 @@
     "paths": {
       "#preload": ["../preload/src/index"],
       "@/*": ["./src/*"],
-      "@assets/*": ["./assets/*"],
+      "@assets/*": ["./assets/*"]
     },
     "lib": ["ESNext", "dom", "dom.iterable"]
   },
