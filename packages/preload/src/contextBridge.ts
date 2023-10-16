@@ -16,7 +16,7 @@ export const main = {
 
   store: {
     get: (key: string) => {
-      ipcRenderer.sendSync("electron-store-get", key);
+      return ipcRenderer.sendSync("electron-store-get", key);
     },
     set: (key: string, value: unknown) => {
       ipcRenderer.send("electron-store-set", key, value);

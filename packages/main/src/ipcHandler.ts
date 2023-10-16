@@ -14,14 +14,10 @@ export function initializeIpcHandlers(
   });
 
   ipcMain.on("electron-store-get", (event: IpcMainEvent, key: string) => {
-    console.log("🚀 ~ file: ipcHandler.ts:19 ~ ipcMain.on ~ key:", key);
     event.returnValue = store.get(key);
-    console.log("🚀 ~ file: ipcHandler.ts:22 ~ ipcMain.on ~ vent.returnValue:", store.get(key));
   });
 
   ipcMain.on("electron-store-set", (_: IpcMainEvent, key: string, value: unknown) => {
-    console.log("🚀 ~ file: ipcHandler.ts:25 ~ ipcMain.on ~ value:", value);
-    console.log("🚀 ~ file: ipcHandler.ts:25 ~ ipcMain.on ~ key:", key);
     store.set(key, value);
   });
 

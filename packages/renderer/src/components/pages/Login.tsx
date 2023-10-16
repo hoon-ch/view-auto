@@ -31,7 +31,6 @@ const Login: React.FC = () => {
   const accountInfo: AccountInfo | null = main.store.get(
     "accountInfo",
   ) as unknown as AccountInfo | null;
-  console.log("🚀 ~ file: Login.tsx:33 ~ accountInfo:", accountInfo);
   const [, setAppState] = useAtom(appState);
 
   const form = useForm<AccountInfo>({
@@ -47,7 +46,6 @@ const Login: React.FC = () => {
     const isSaveAccountInfo = form.watch("saveAccountInfo");
 
     if (isSaveAccountInfo) {
-      console.log("🚀 ~ file: Login.tsx:47 ~ onSubmit ~ isSaveAccountInfo:", isSaveAccountInfo);
       main.store.set("accountInfo", values);
       setTimeout(() => main.store.get("accountInfo"), 1000);
     } else if (!isSaveAccountInfo && accountInfo) {
