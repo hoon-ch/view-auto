@@ -9,9 +9,7 @@ export function initializeIpcHandlers(
   mainWindow: Electron.BrowserWindow,
 ) {
   ipcMain.on("get-current-window-size", (event: IpcMainEvent) => {
-    console.log("🚀 ~ file: ipcHandler.ts:13 ~ ipcMain.on ~ mainWindow:", mainWindow.getSize());
     const [width, height] = mainWindow.getSize();
-    // event.reply("window-size", { width, height });
     event.returnValue = { width, height };
   });
 

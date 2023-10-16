@@ -1,21 +1,19 @@
 import { ipcRenderer } from "electron";
 
 // browserWindow에서 사용할 모듈
-type MessageCallback = (event: Electron.IpcRendererEvent, ...args: unknown[]) => void;
 
 export const main = {
   send: (channel: string, data?: unknown) => {
     ipcRenderer.send(channel, data);
   },
-  on: (channel: string, func: MessageCallback) => {
-    ipcRenderer.on(channel, func);
-  },
-  off: (channel: string, func: MessageCallback) => {
-    ipcRenderer.off(channel, func);
-  },
+  on: <T = unknown>(channel: string, callback: (data: T) => void) =>
+    ipcRenderer.on(channel, (_, data) => callback(data as T)),
+  off: <T = unknown>(channel: string, callback: (data: T) => void) =>
+    ipcRenderer.removeListener(channel, (_, data) => callback(data)),
   getWindowSize: () => {
-    ipcRenderer.sendSync("get-current-window-size");
+    return ipcRenderer.sendSync("get-current-window-size");
   },
+
   store: {
     get: (key: string) => {
       ipcRenderer.sendSync("electron-store-get", key);
