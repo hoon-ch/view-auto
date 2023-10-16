@@ -14,11 +14,29 @@ type Permission = Parameters<
  *
  * In development mode you need allow open `VITE_DEV_SERVER_URL`.
  */
-const ALLOWED_ORIGINS_AND_PERMISSIONS = new Map<string, Set<Permission>>(
+// Type definition: OriginPermissionTuple can be a tuple of a URL string and a Set of permissions or an empty array
+type OriginPermissionTuple = [string, Set<Permission>] | [];
+
+// Definition of DEV_ORIGIN_PERMISSIONS:
+// - If in development mode and the VITE_DEV_SERVER_URL environment variable is set, return a tuple with that URL's origin and an empty Set of permissions
+// - Otherwise, return an empty array
+const DEV_ORIGIN_PERMISSIONS: OriginPermissionTuple =
   import.meta.env.DEV && import.meta.env.VITE_DEV_SERVER_URL
-    ? [[new URL(import.meta.env.VITE_DEV_SERVER_URL).origin, new Set()]]
-    : [],
-);
+    ? [new URL(import.meta.env.VITE_DEV_SERVER_URL).origin, new Set<Permission>()]
+    : [];
+
+// Definition of ALLOWED_ORIGINS_AND_PERMISSIONS:
+// - If DEV_ORIGIN_PERMISSIONS is not an empty array (i.e., permissions are defined in development mode), add its tuple and the default permissions for "https://www.lcampus.co.kr" to the map
+// - If DEV_ORIGIN_PERMISSIONS is an empty array, only add the default permissions for "https://www.lcampus.co.kr" to the map
+const ALLOWED_ORIGINS_AND_PERMISSIONS: Map<
+  string,
+  Set<Permission>
+> = DEV_ORIGIN_PERMISSIONS.length > 0
+  ? new Map([
+      DEV_ORIGIN_PERMISSIONS as [string, Set<Permission>], // Use type assertion to provide clear type
+      ["https://www.lcampus.co.kr", new Set<Permission>()], // Add default domain and permissions
+    ])
+  : new Map([["https://www.lcampus.co.kr", new Set<Permission>()]]); // Add only default domain and permissions if no permissions are set in development mode
 
 /**
  * A list of origins that you allow open IN BROWSER.
@@ -30,7 +48,10 @@ const ALLOWED_ORIGINS_AND_PERMISSIONS = new Map<string, Set<Permission>>(
  *   href="https://github.com/"
  * >
  */
-const ALLOWED_EXTERNAL_ORIGINS = new Set<`https://${string}`>(["https://github.com"]);
+const ALLOWED_EXTERNAL_ORIGINS = new Set<`https://${string}`>([
+  "https://github.com",
+  "https://www.lcampus.co.kr",
+]);
 
 app.on("web-contents-created", (_, contents) => {
   /**
