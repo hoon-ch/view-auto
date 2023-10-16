@@ -1,10 +1,10 @@
 import ElectronVersions from "@/components/sample/ElectronVersions";
 import ReactiveCounter from "@/components/sample/ReactiveCounter";
 import ReactiveHash from "@/components/sample/ReactiveHash";
-import ElectronLogo from "@assets/electronjs.svg";
-import ViteLogo from "@assets/logo.svg";
-import ReactLogo from "@assets/react.svg";
-import TailwindLogo from "@assets/tailwindcss.svg";
+import ElectronLogo from "@assets/logo/electronjs.svg";
+import ViteLogo from "@assets/logo/logo.svg";
+import ReactLogo from "@assets/logo/react.svg";
+import TailwindLogo from "@assets/logo/tailwindcss.svg";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
