@@ -1,4 +1,5 @@
 import type React from "react";
+import type { Control } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -92,7 +93,7 @@ const Login: React.FC = () => {
 };
 
 type RenderFieldProps = {
-  control?: never;
+  control: Control<AccountInfo>;
   name: keyof AccountInfo;
   label: string;
   description: string;
@@ -119,6 +120,7 @@ const RenderField: React.FC<RenderFieldProps> = ({
           <Input
             type={type}
             {...field}
+            value={field.value.toString()}
           />
         </FormControl>
         <FormMessage />
@@ -128,7 +130,7 @@ const RenderField: React.FC<RenderFieldProps> = ({
 );
 
 type SaveAccountCheckboxProps = {
-  control?: never;
+  control: Control<AccountInfo>;
 };
 
 const SaveAccountCheckbox: React.FC<SaveAccountCheckboxProps> = ({ control }) => (
