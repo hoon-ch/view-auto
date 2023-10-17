@@ -38,10 +38,10 @@ export const view = {
   checkLoading: () => {
     ipcRenderer.send("check-loading");
   },
-  checkLogin: () => {
-    ipcRenderer.invoke("check-login").then((result: unknown) => {
-      console.log("🚀 ~ file: contextBridge.ts:96 ~ ipcRenderer.invoke ~ result", result);
-      return result;
-    });
+  getPHPSESSID: () => {
+    return ipcRenderer.sendSync("get-phpsessid");
+  },
+  getLoginPermission: (account: unknown) => {
+    return ipcRenderer.sendSync("get-login-permission", account);
   },
 };

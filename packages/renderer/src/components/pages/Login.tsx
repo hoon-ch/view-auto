@@ -14,11 +14,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { loginToWebsite } from "@/components/logic/generator";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAtom } from "jotai";
 import { appState } from "@/lib/store";
-import { main } from "#preload";
+import { main, view } from "#preload";
 
 const formSchema = z.object({
   id: z.string().min(2).max(50),
@@ -47,14 +46,13 @@ const Login: React.FC = () => {
 
     if (isSaveAccountInfo) {
       main.store.set("accountInfo", values);
-      setTimeout(() => main.store.get("accountInfo"), 1000);
     } else if (!isSaveAccountInfo && accountInfo) {
       main.store.delete("accountInfo");
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-    loginToWebsite(values);
-    setAppState({ isLogin: true, isScan: false });
+    const isLogin = view.getLoginPermission({ id: values.id, password: values.password });
+    // TODO: 로그인 성공 또는 실패시 팝업 표기
+    setAppState({ isLogin: isLogin, isScan: false });
   }
 
   return (

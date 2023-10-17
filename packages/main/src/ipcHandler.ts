@@ -1,3 +1,4 @@
+import axios from "axios";
 import type { IpcMainEvent } from "electron";
 import { ipcMain } from "electron";
 import Store from "electron-store";
@@ -74,7 +75,36 @@ export function initializeIpcHandlers(
     const [width, height] = mainWindow.getSize();
     mainWindow?.webContents.send("window-resize", { width, height });
   });
+
+  ipcMain.on("get-login-permission", async (event: IpcMainEvent, account: AccountInfo) => {
+    if (!browserView) {
+      event.returnValue = false;
+      return;
+    }
+
+    try {
+      const phpsessid = await getPHPSESSIDFromBrowserView(browserView);
+      const { cookies, responseBody } = await sendLoginRequest(account, phpsessid);
+
+      // 로그인 실패를 나타내는 응답 본문의 조건을 검사
+      if (isLoginFailed(responseBody)) {
+        event.returnValue = false;
+        return;
+      }
+
+      await setCookiesToBrowserView(browserView, cookies);
+      event.returnValue = true;
+    } catch (error) {
+      console.error(error);
+      event.returnValue = false;
+    }
+  });
 }
+
+type AccountInfo = {
+  id: string;
+  password: string;
+};
 
 function setBrowserViewSize(browserView: Electron.BrowserView, mainWindow: Electron.BrowserWindow) {
   const [windowWidth, windowHeight] = mainWindow.getSize();
@@ -97,4 +127,84 @@ function setBrowserViewSize(browserView: Electron.BrowserView, mainWindow: Elect
     width: viewWidth,
     height: viewHeight,
   });
+}
+
+async function getPHPSESSIDFromBrowserView(browserView: Electron.BrowserView): Promise<string> {
+  const cookieMatchScript = `
+    document.cookie.match(/PHPSESSID=[^;]+/) ? document.cookie.match(/PHPSESSID=[^;]+/)[0].split("=")[1] : null;
+  `;
+
+  return browserView.webContents.executeJavaScript(cookieMatchScript) as Promise<string>;
+}
+
+async function sendLoginRequest(
+  account: AccountInfo,
+  phpsessid: string,
+): Promise<{ cookies: string[]; responseBody: unknown }> {
+  const formData = new FormData();
+  formData.append("url", "https://www.lcampus.co.kr/");
+  formData.append("Login_ID", account.id);
+  formData.append("Login_PASS", account.password);
+  const config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: "https://www.lcampus.co.kr/Member/Login.Check2.php",
+    headers: {
+      Cookie: phpsessid,
+      "Content-Type": "multipart/form-data",
+    },
+    data: formData,
+  };
+
+  const response = await axios.request(config);
+  const responseBody = response.data; // 응답 본문
+  const cookies = response.headers?.["set-cookie"] || [];
+
+  return { cookies, responseBody };
+}
+
+// 로그인 실패를 판단하는 함수
+function isLoginFailed(responseBody: unknown): boolean {
+  if (typeof responseBody === "string" && responseBody.includes("history.go(-1)")) {
+    return true; // 임시 코드
+  }
+  return false;
+}
+
+async function setCookiesToBrowserView(browserView: Electron.BrowserView, cookies: string[]) {
+  for (const cookieStr of cookies) {
+    const cookieObject = parseCookie(cookieStr);
+    const transformedCookie = transformCookieObject(cookieObject);
+
+    await browserView.webContents.session.cookies.set(
+      transformedCookie as Electron.CookiesSetDetails,
+    );
+  }
+}
+
+function parseCookie(cookieString: string): { [key: string]: string } {
+  return cookieString.split("; ").reduce(
+    (acc, pair) => {
+      const [key, value] = pair.split("=");
+      acc[key] = value;
+      return acc;
+    },
+    {} as { [key: string]: string },
+  );
+}
+
+function transformCookieObject(cookieObject: { [s: string]: unknown }): Electron.CookiesSetDetails {
+  const { domain, path, expires } = cookieObject as {
+    domain: string;
+    path: string;
+    expires: string;
+  };
+  return {
+    url: "https://www.lcampus.co.kr",
+    name: Object.keys(cookieObject)[0],
+    value: String(Object.values(cookieObject)[0]),
+    domain: domain.startsWith(".") ? domain.substring(1) : domain,
+    path,
+    expirationDate: new Date(expires).getTime() / 1000,
+  };
 }
