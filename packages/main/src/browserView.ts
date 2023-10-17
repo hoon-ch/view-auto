@@ -25,6 +25,13 @@ async function setCookieBeforeLoading(browserView: BrowserView): Promise<void> {
   const cookies = [
     { url: "https://www.lcampus.co.kr/", name: "thePopup124", value: "done" },
     { url: "https://www.lcampus.co.kr/", name: "thePopup160", value: "done" },
+    {
+      url: "https://www.lcampus.co.kr/",
+      name: "popupGuide7Day",
+      value: "true",
+      path: "/",
+      expries: new Date().setDate(new Date().getDate() + 7),
+    },
   ];
 
   for (const c of cookies) {
