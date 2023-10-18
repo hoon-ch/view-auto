@@ -50,9 +50,16 @@ const Login: React.FC = () => {
       main.store.delete("accountInfo");
     }
 
-    const isLogin = view.getLoginPermission({ id: values.id, password: values.password });
-    // TODO: 로그인 성공 또는 실패시 팝업 표기
-    setAppState({ isLogin: isLogin, isScan: false });
+    const isLogin = view.getLoginPermission({ id: values.id, password: values.password })
+      ? "success"
+      : "failed";
+
+    setAppState(prev => ({ ...prev, isLogin }));
+    if (isLogin === "failed") {
+      setTimeout(() => {
+        setAppState(prev => ({ ...prev, isLogin: "none" }));
+      }, 500);
+    }
   }
 
   return (

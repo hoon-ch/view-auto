@@ -7,6 +7,7 @@ import Controller from "@/components/pages/Controller";
 import { DevTools } from "jotai-devtools";
 import { Button } from "./components/ui/button";
 import { main } from "#preload";
+import { Toaster } from "@/components/ui/toaster";
 
 const App = () => {
   const [windowSize, setWindowSize] = useState<{ width: string; height: string }>({
@@ -56,6 +57,7 @@ const App = () => {
       >
         view
       </Button>
+      <Toaster />
       <Sample />
     </>
   );
