@@ -1,10 +1,7 @@
 import { resolve, sep } from "path";
 
 export default {
-  "*.{js,mjs,cjs,ts,mts,cts,tsx}": [
-    "eslint --cache --fix",
-    'npx prettier --write "**/*.{js,mjs,cjs,ts,mts,cts,tsx,json}"',
-  ],
+  "*.{js,mjs,cjs,ts,mts,cts,tsx}": ["eslint --cache --fix", "npx prettier --write"],
 
   /**
    * Run typechecking if any type-sensitive files or project dependencies was changed
