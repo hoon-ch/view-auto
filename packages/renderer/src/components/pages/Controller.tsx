@@ -1,14 +1,16 @@
 import type React from "react";
 import Login from "./Login";
 import { useAtom } from "jotai";
-import { appState } from "@/lib/store";
+import { appState, classState } from "@/lib/store";
 import ListView from "./ListView";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
+import { view } from "#preload";
 
 const Controller: React.FC = () => {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   const [state, setAppState] = useAtom(appState);
+  const [classItem] = useAtom(classState);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -18,6 +20,9 @@ const Controller: React.FC = () => {
         title: "로그인 성공",
         description: "성공적으로 로그인 되었습니다.",
       });
+      setTimeout(() => {
+        view.go("https://www.lcampus.co.kr/_StyleBox4/My_Campus/index.php");
+      }, 500);
     } else if (state.isLogin === "failed") {
       toast({
         variant: "destructive",
@@ -27,11 +32,19 @@ const Controller: React.FC = () => {
     }
   }, [state.isLogin, toast]);
 
+  useEffect(() => {
+    if (state.isSelected) {
+      toast({
+        title: "수강을 시작합니다",
+        description: classItem.title,
+      });
+    }
+  }, [state.isSelected, classItem, toast]);
+
   // TODO: Implement control and view logic based on appState
-  if (state.isLogin === "success" && !state.isScan) return <ListView />;
-  else {
-    return <Login />;
-  }
+  if (state.isLogin === "failed" || state.isLogin === "none") return <Login />;
+  if (state.isLogin === "success" && !state.isSelected) return <ListView />;
+  if (state.isLogin === "success" && state.isSelected) return <></>;
 };
 
 export default Controller;
