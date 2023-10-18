@@ -44,7 +44,7 @@ const injectVariables = (elements: Elements): void => {
     .map(([name, element]) => generateJsQuery(name, element.selector!))
     .join("");
 
-  view.injectJS(queries);
+  view.injectJS("variable", queries);
 };
 
 function loginToWebsite(login: Login) {
@@ -63,7 +63,7 @@ function loginToWebsite(login: Login) {
     }, 500);
   `;
 
-  view.injectJS(loginScript);
+  view.injectJS("login-to-website", loginScript);
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
   // return new Promise<boolean>(resolve => {
