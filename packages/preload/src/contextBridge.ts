@@ -16,7 +16,7 @@ export const main = {
 
   store: {
     get: (key: string) => {
-      return ipcRenderer.sendSync("electron-store-get", key);
+      return ipcRenderer.send("electron-store-get", key);
     },
     set: (key: string, value: unknown) => {
       ipcRenderer.send("electron-store-set", key, value);
@@ -32,8 +32,11 @@ export const main = {
 
 // browserView에서 사용할 모듈
 export const view = {
-  injectJS: (js: string) => {
-    ipcRenderer.send("execute-js-in-browserview", js);
+  go: (url: string) => {
+    return ipcRenderer.send("go", url);
+  },
+  injectJS: (idx: string, js: string) => {
+    return ipcRenderer.send("execute-js-in-browserview", idx, js);
   },
   checkLoading: () => {
     ipcRenderer.send("check-loading");

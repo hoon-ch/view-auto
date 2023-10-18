@@ -26,11 +26,21 @@ export function initializeIpcHandlers(
     store.delete(key);
   });
 
-  ipcMain.on("execute-js-in-browserview", (event: IpcMainEvent, js: string) => {
+  ipcMain.on("go", (_: IpcMainEvent, url: string) => {
+    browserView.webContents.loadURL(url);
+  });
+
+  ipcMain.on("execute-js-in-browserview", (event: IpcMainEvent, idx: string, js: string) => {
     if (browserView) {
-      browserView.webContents.executeJavaScript(js).then((result: unknown) => {
-        event.reply("js-executed", result);
-      });
+      browserView.webContents
+        .executeJavaScript(js)
+        .then((result: unknown) => {
+          event.reply(idx, result);
+        })
+        .catch((error: Error) => {
+          console.error("Error executing JavaScript:", error);
+          event.reply("js-executed", { error: error.message });
+        });
     }
   });
 
@@ -51,7 +61,6 @@ export function initializeIpcHandlers(
         `,
         )
         .then((result: unknown) => {
-          console.log("🚀 ~ file: ipcHandler.ts:66 ~ ipcMain.on ~ result", result);
           return result;
         });
     }
