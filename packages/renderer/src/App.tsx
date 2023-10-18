@@ -46,13 +46,13 @@ const App = () => {
         style={appStyle}
       >
         <div className="flex-auto">
-          <div className="flex h-full w-full flex-col items-center justify-center space-y-4 overflow-x-auto bg-slate-100">
+          <div className="flex h-full w-full flex-col items-center justify-center space-y-4 overflow-x-auto bg-slate-50">
             <Controller />
           </div>
         </div>
       </div>
       <Button
-        className=" fixed left-2 top-[25%]"
+        className="fixed left-2 top-[26.5%]"
         onClick={handleToggleView}
       >
         view
