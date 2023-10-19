@@ -1,8 +1,9 @@
 import type React from "react";
-import Login from "./Login";
+import Login from "@/components/pages/Login";
+import ListView from "@/components/pages/ListView";
+import Classroom from "@/components/pages/Classroom";
 import { useAtom } from "jotai";
 import { appState, classState } from "@/lib/store";
-import ListView from "./ListView";
 import { useEffect } from "react";
 import { useToast } from "@/components/ui/use-toast";
 import { view } from "#preload";
@@ -44,7 +45,7 @@ const Controller: React.FC = () => {
   // TODO: Implement control and view logic based on appState
   if (state.isLogin === "failed" || state.isLogin === "none") return <Login />;
   if (state.isLogin === "success" && !state.isSelected) return <ListView />;
-  if (state.isLogin === "success" && state.isSelected) return <></>;
+  if (state.isLogin === "success" && state.isSelected) return <Classroom />;
 };
 
 export default Controller;

@@ -9,6 +9,8 @@ export function initializeIpcHandlers(
   browserView: Electron.BrowserView,
   mainWindow: Electron.BrowserWindow,
 ) {
+  let childWindow: Electron.BrowserWindow;
+
   ipcMain.on("get-current-window-size", (event: IpcMainEvent) => {
     const [width, height] = mainWindow.getSize();
     event.returnValue = { width, height };
@@ -35,6 +37,8 @@ export function initializeIpcHandlers(
       browserView.webContents
         .executeJavaScript(js)
         .then((result: unknown) => {
+          console.log("🚀 ~ file: ipcHandler.ts:41 ~ .then ~ result:", result);
+          console.log("🚀 ~ file: ipcHandler.ts:41 ~ .then ~ idx:", idx);
           event.reply(idx, result);
         })
         .catch((error: Error) => {
@@ -106,6 +110,21 @@ export function initializeIpcHandlers(
     } catch (error) {
       console.error(error);
       event.returnValue = false;
+    }
+  });
+
+  browserView.webContents.on("did-create-window", newWindow => {
+    childWindow = newWindow;
+    childWindow.hide();
+
+    mainWindow.webContents.send("start-study", "true");
+  });
+
+  ipcMain.on("toggle-child-window", () => {
+    if (childWindow.isVisible()) {
+      childWindow.hide();
+    } else {
+      childWindow.show();
     }
   });
 }

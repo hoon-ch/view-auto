@@ -1,7 +1,7 @@
 import type React from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { useState, useEffect } from "react";
-import { classList } from "../logic/scrapper";
+import { classList } from "../logic/parse-classes";
 import { main, view } from "#preload";
 import { Button } from "../ui/button";
 import { nanoid } from "nanoid";

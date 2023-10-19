@@ -58,7 +58,7 @@ const App = () => {
         view
       </Button>
       <Toaster />
-      <Sample />
+      {/* <Sample /> */}
     </>
   );
 };

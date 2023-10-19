@@ -103,18 +103,32 @@ app.on("web-contents-created", (_, contents) => {
    * @see https://www.electronjs.org/docs/latest/tutorial/security#14-disable-or-limit-creation-of-new-windows
    * @see https://www.electronjs.org/docs/latest/tutorial/security#15-do-not-use-openexternal-with-untrusted-content
    */
-  contents.setWindowOpenHandler(({ url }) => {
-    const { origin } = new URL(url);
+  let isAboutBlankOpened = false;
 
-    if (ALLOWED_EXTERNAL_ORIGINS.has(origin as `https://${string}`)) {
-      // Open url in default browser.
-      shell.openExternal(url).catch(console.error);
-    } else if (import.meta.env.DEV) {
-      console.warn(`Blocked the opening of a disallowed origin: ${origin}`);
+  contents.setWindowOpenHandler(({ url }) => {
+    if (url === "about:blank") {
+      isAboutBlankOpened = true;
+      return { action: "allow" }; // about:blank를 허용
     }
 
-    // Prevent creating a new window.
-    return { action: "deny" };
+    if (isAboutBlankOpened) {
+      const { origin } = new URL(url);
+
+      if (ALLOWED_EXTERNAL_ORIGINS.has(origin as `https://${string}`)) {
+        shell.openExternal(url).catch(console.error);
+        isAboutBlankOpened = false;
+        return { action: "deny" }; // 이미 외부에서 열렸으므로 새 창을 거부
+      }
+
+      if (import.meta.env.DEV) {
+        console.warn(`Blocked the opening of a disallowed origin: ${origin}`);
+        isAboutBlankOpened = false;
+        return { action: "deny" };
+      }
+    }
+
+    isAboutBlankOpened = false;
+    return { action: "deny" }; // 기본적으로 모든 새 창을 거부
   });
 
   /**

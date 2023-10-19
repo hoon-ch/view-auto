@@ -105,3 +105,458 @@
 
   </tbody>
 </table>
+
+
+
+<script type="text/javascript" charset="utf-8">
+
+  var flashYn = false;
+
+function mobile_alert() {
+alert("모바일에서는 강의수강이 불가능합니다!");
+}
+
+function no_mobile() {
+//alert("본 산업안전보건 교육 과정은 고용노동부 방침에 따라 모바일에서 수강이 제한됩니다. \n pc에서 접속 후 수강 바랍니다. \n (고객센터 :  02-861-2552)");
+if (confirm("산업안전보건교육 과정은 모바일 전용 페이지나 PC에서 접속하여 수강 가능합니다.\n모바일 전용 페이지로 이동하시겠습니까?")) {
+location.href="https://lcampus.co.kr/m_campus/mycampus.php";
+}
+return false;
+}
+
+
+iconChange();
+
+if(flashYn) {
+getBrowserGuidePopup();
+} else {
+getPopupGuidePopup();
+}
+
+
+function getBrowserGuidePopup() {
+var cookieData = document.cookie;
+if ((cookieData.indexOf('browserGuide1Day=true') < 0 && cookieData.indexOf('browserGuide7Day=true') < 0) && flashYn) {
+ openBrowserGuidePopup('c');
+}
+}
+
+function openBrowserGuidePopup(param) {
+window.open("./browser_guide.php?v=" + param, "", "width=930,height=820,scrollbars=yes,resizable=yes");
+}
+
+function getPopupGuidePopup() {
+var cookieData = document.cookie;
+if ((cookieData.indexOf('popupGuide1Day=true') < 0 && cookieData.indexOf('popupGuide7Day=true') < 0) && !flashYn) {
+ openPopupGuidePopup('c');
+}
+}
+
+function openPopupGuidePopup(param) {
+window.open("./popup_guide.php?v=" + param, "", "width=930,height=820,scrollbars=yes,resizable=yes");
+}
+
+function openJindanPopup(loc_no){
+window.open("./popup_jindan.php?loc_no=" + loc_no, "", "width=830,height=600,scrollbars=yes,resizable=yes");
+}
+function iconChange() {
+var flashQuestionIcon = document.getElementById('flashQuestionIcon');
+var iconOrder = 0;
+setInterval(function(){
+ if(iconOrder == 0) {
+     flashQuestionIcon.classList.replace('ing_dt_qs_icon2', 'ing_dt_qs_icon3');
+     iconOrder = 1;
+ } else {
+     flashQuestionIcon.classList.replace('ing_dt_qs_icon3', 'ing_dt_qs_icon2');
+     iconOrder = 0;
+ }
+}, 1000);
+}
+
+function deleteMyCookie() {
+var tmpCookie1 = getCookie("lo_no");
+var tmpCookie2 = getCookie("lc_no");
+
+setCookie('lo_no', tmpCookie1, -1, '/');
+setCookie('lc_no', tmpCookie2, -1, '/');
+}
+
+$(function () {
+deleteMyCookie();
+
+         var l_per = "";
+l_per =0;
+var donutEl = document.getElementById("ing_donut").getContext("2d");
+var donut = new Chart(donutEl).Doughnut(
+ // Datas
+ [
+     {
+         value: l_per,
+         color: "#F7464A",
+         highlight: "#FF5A5E",
+         label: "Red"
+     },
+     {
+         value: 100 - l_per,
+         color: "#e5e5e5",
+         highlight: "#5AD3D1",
+         label: "Green"
+     }
+ ],
+ // Options
+ {
+     segmentShowStroke: true,
+     segmentStrokeColor: "#fff",
+     segmentStrokeWidth: 2,
+     percentageInnerCutout: 75,
+     animationSteps: 100,
+     animationEasing: "easeOutBounce",
+     animateRotate: true,
+     animateScale: true,
+     responsive: true,
+     maintainAspectRatio: true,
+     showScale: true,
+     animateScale: true
+ });
+});
+
+function question_test_jae(uid) {
+window.open("../../_StyleBox4/SubPage/Question_Test_dev.php?mode=question&uid=" + uid, "question_test", "width=1000,height=1100,scrollbars=yes,resizable=yes");
+}
+
+function question_test_new(uid) {
+window.open("https://www.lcampus.co.kr/e_exam_dev/test?uid=" + uid, "question_test", "width=1000,height=1100,scrollbars=yes,resizable=yes");
+}
+
+function question_test(uid, per, test_subject, no_open) {
+var viewtype = '0';
+var membertype = '';
+
+if (viewtype == 2 && membertype == '온라인프리패스') {
+ alert("온라인프리패스 신청시 수강이 가능합니다!");
+ return false;
+}
+
+var test = test_subject.substring(test_subject.length - 4, test_subject.length);
+
+if (no_open == 'N') {
+ alert("이전 수업을 수강하지 않으셨습니다. 이전 수업 수강 후 시험을 진행해 주세요");
+ return false;
+}
+
+         var totalpass = 100;
+var lc_type2 = 3;
+var lc_date = '2023-09-15';
+if (lc_type2 == 3 && lc_date >= '2020-12-15') {
+
+ if (per < totalpass && test_subject.match('평가')) {
+     alert("총 진도율 " + totalpass + "% 이상 충족되어야 평가 응시 가능합니다.");
+     return false;
+ }
+} else {
+                 if (per < 100 && test_subject.match('평가')) {
+     alert("총 진도율 100% 이상 충족되어야 평가 응시 가능합니다.");
+     return false;
+ }
+             }
+
+
+     if (confirm("시험 진행하시겠습니까?")) {
+         // window.open("../../_StyleBox4/SubPage/Question_Test.php?mode=question&uid=" + uid, "question_test", "width=1000,height=900,scrollbars=yes,resizable=yes");
+         window.open("https://www.lcampus.co.kr/e_exam_dev/test?uid=" + uid, "question_test", "width=1000,height=1100,scrollbars=yes,resizable=yes");
+
+
+     }
+
+
+                 // window.open("http://www.lcampus.co.kr/_Script/PHP_Plugin/Footer.Pop_Window.php?no=44", "question_test5", "width=620,height=591 ,_blank,scrollbars=yes,resizable=yes");
+                     }
+
+function debate_test(lc_no, db_no, dr_no) {
+if (dr_no) {
+ // 해설하기
+ window.open("../../_StyleBox4/SubPage/debate_Test.php?dNo=" + dr_no, "debate_test", "width=1000,height=1000,scrollbars=yes,resizable=yes");
+} else {
+ // 토론하기
+ window.open("../../_StyleBox4/SubPage/debate_Test.php?cid=" + lc_no + "&uid=" + db_no, "debate_test", "width=1000,height=1000,scrollbars=yes,resizable=yes");
+}
+}
+
+function view_report() {
+window.open("http://www.lcampus.co.kr/MyPage/DGEV_MyTest_Report.php?uid=", "question_report_view", "width=800,scrollbars=yes,resizable=yes");
+}
+
+function viewSurvey(no, lc_no, loc_no, mb_id, testyn) {
+if (testyn) {
+ window.open('../../_StyleBox4/Survey.php?testyn=' + testyn + '&no=' + no + '&lc=' + lc_no + '&loc=' + loc_no + '&mb=' + mb_id, 'survey', 'width=1000,height=800,scrollbars=yes,resizable=yes"');
+} else if (no == 19) {
+ window.open('../../_StyleBox4/Survey_new.php?no=' + no + '&lc=' + lc_no + '&loc=' + loc_no + '&mb=' + mb_id, 'survey', 'width=800,height=800, scrollbars = yes, resizable=yes');
+} else {
+ window.open('../../_StyleBox4/Survey.php?no=' + no + '&lc=' + lc_no + '&loc=' + loc_no + '&mb=' + mb_id, 'survey', 'width=800,height=800, scrollbars = yes, resizable=yes');
+}
+
+}
+
+function closeClass(no, cm_no, mb_id, reset_yn) {
+var msg = reset_yn ?
+ "재응시 가능한 평가가 있습니다.\n 해당 과정을 종료하시겠습니까?\n\n * '예' 버튼 선택 시 : 재응시 불가, 수강종료 강좌 탭에서 확인 가능, 수료/미수료 확정, 수료에 한해 수료증 발급 가능\n * '아니오' 버튼 선택 시 : 수강종료일 다음날부터 7일간 최종평가 재응시 가능\n"
+ : "해당 과정을 종료하시겠습니까?";
+if(confirm(msg)) {
+ $('#closeform input[name=uid]').val(no);
+ $('#closeform input[name=cm_no]').val(cm_no);
+ $('#closeform input[name=mb_id]').val(mb_id);
+ $('#closeform').submit();
+}
+return false;
+}
+
+function preview3(pre_value, seq, division, no_open, acc_open, time_ok, idx) {
+var viewtype = '0';
+lecSession(pre_value, seq);
+
+if(no_open=="N"){
+alert('이전차시 수강기록이 없습니다. 수업보기는 차시 순서대로 진행해야 합니다.');
+return;
+}
+
+//환급 과정 차시별 50%이상 학습 알림창
+$('input:hidden[name=seq]').val("");
+$('input:hidden[name=seq2]').val("");
+$('input:hidden[name=division]').val("");
+$('input:hidden[name=open]').val("");
+$('input:hidden[name=seq]').val(pre_value);
+$('input:hidden[name=seq2]').val(seq);
+$('input:hidden[name=division]').val(division);
+$('input:hidden[name=open]').val(time_ok);
+
+//수업보기를 클릭할 때 마다 ajax로 아이디랑 수업seq 오늘날짜를 보낸후 ajax_log_ct.php에서 검사를 해서 오늘날짜에 수업로그 개수를 가지고 온다 8회이상이라면 팝업창 띄우기
+
+var sUrl = "../../_StyleBox4/SubPage/ajax_log_ct2.php";
+var mb_id = $('input:hidden[name=mb_id]').val();
+var lc_no = $('input:hidden[name=lc_no]').val();
+var loc_no = $('input:hidden[name=loc_no]').val();
+var today = $('input:hidden[name=today]').val();
+var lc_reply = $('input:hidden[name=lc_reply]').val();
+var lc_type = $('input:hidden[name=lc_type]').val();
+
+$.ajax({
+ type: "post",
+ url: sUrl,
+ data: {mb_id: mb_id, lc_no: lc_no, loc_no: loc_no, today: today},
+ dataType: "json",
+ success: function (data) {
+     var mb_id = "01052226623";
+     data_ct = parseInt($.trim(data.ct));
+
+     if (lc_reply != 1 && lc_type != 3 && viewtype != 9) {
+         if (data_ct >= 8 && mb_id != 'admin' && mb_id != 'yy-562' && mb_id != 'yy-501' && mb_id != 'yy-567' && mb_id != 'yy-447' && mb_id != 'yy-413' && mb_id != 'test333') {
+             if (acc_open == "Y") {
+                                                 window.open("", "elearn_popup", "scrollbars=no, resizable=no, width=1000, height=750");
+                                                 document.elearnform.submit();
+
+             } else {
+                 window.open("../../_StyleBox4/SubPage/pop_notice_edu.php", "question_test4", "width=723,height=235,scrollbars=yes,resizable=yes");
+             }
+         } else {
+                                         window.open("", "elearn_popup", "scrollbars=no, resizable=no, width=1000, height=750");
+                                         document.elearnform.submit();
+         }
+     } else {
+
+                                 window.open("", "elearn_popup", "scrollbars=no, resizable=no, width=1000, height=750");
+                                 document.elearnform.submit();
+     }
+
+ },
+ complete: function (data) {
+     // 통신이 실패했어도 완료가 되었을 때 이 함수를 타게 된다.
+     // TODO
+     console.log('ok');
+
+
+ },
+ error: function (request, status, error) {
+     alert("code:" + request.status + "\n" + "\n" + "error:" + error + " message:" + request.responseText);
+ }
+});
+
+
+}
+
+function lecSession(seq, seqC) {
+var param = 'seq=' + seq + '&seqC=' + seqC;
+var url = "/e_learning_f/ajax_lec_session.php";
+console.log(param);
+$.ajax({
+ type: "post",
+ data: param,
+ url: url,
+ async: false,
+ success: function (data) {
+     console.log(data);
+
+ }
+});
+}
+
+
+function popupClose() {
+setTimeout(function () {
+ window.location.reload()
+}, 1000);
+console.log("#");
+
+}
+
+function timeUpdate(lo_no, lc_no, timeGap) {
+console.log(lo_no + ' ' + lc_no + ' ' + timeGap);
+var url = "/ajax_closetime.php";
+var param = 'seq=' + lo_no + '&seqC=' + lc_no + '&timeGap=' + timeGap;
+//console.log(param);
+
+$.ajax({
+ type: "post",
+ data: param,
+ url: url,
+ success: function (data) {
+     //console.log(data);
+     //setTimeout(function(){window.location.reload()}, 1000);
+ },
+ complete: function (data) {
+     // 통신이 실패했어도 완료가 되었을 때 이 함수를 타게 된다.
+     //console.log(data);
+     setTimeout(function () {
+         window.location.reload()
+     }, 1000);
+ },
+ error: function (request, status, error) {
+     console.log(error);
+     alert("code:" + request.status + "\n" + "\n" + "error:" + error + "message:" + request.responseText);
+     return false;
+ }
+});
+}
+
+$(".no_test").click(function () {
+var is_before = $(this).attr("data-before");
+//console.log(is_before);
+var now_test = $(this).attr("data-nowtest");
+
+// alert(is_before + "를 제출하지 않았습니다.\n" + is_before + " 제출 후 "+ now_test +" 응시 가능합니다.");
+
+});
+
+
+/*
+쿠키생성
+*/
+function setCookie(name, value, expiredays) {
+var date = new Date();
+if (expiredays == null) {
+ date.setTime(date.getTime() + 3600 * 1000);
+}
+//console.log(date);
+//console.log("111");
+
+
+document.cookie = name + "=" + escape(value) + "; path=/; expires=" + date + ";"
+}
+
+/*
+쿠키호출
+*/
+function getCookie(name) {
+var nameOfCookie = name + "=";
+var x = 0;
+while (x <= document.cookie.length) {
+ var y = (x + nameOfCookie.length);
+ if (document.cookie.substring(x, y) == nameOfCookie) {
+     if ((endOfCookie = document.cookie.indexOf(";", y)) == -1)
+         endOfCookie = document.cookie.length;
+     return unescape(document.cookie.substring(y, endOfCookie));
+ }
+ x = document.cookie.indexOf(" ", x) + 1;
+ if (x == 0)
+     break;
+}
+return "";
+}
+
+function accorFaq() {
+window.open("http://www.lcampus.co.kr/humax_faq_pop.php", "_blank", "width=500,height=500,resizable=yes");
+
+}
+
+/*ap 보안서약서*/
+function survey_pop(type) {
+var sUrl = "../../_StyleBox4/ajax_privacy.php";
+var company = "주식회사에이티지";
+var id = "01052226623";
+$.ajax({
+ type: "post",
+ url: sUrl,
+ data: {company: company, id: id},
+ dataType: "html",
+ success: function (data) {
+
+     if (data == 0) {
+         //console.log(data);
+         if (type = 'y') {
+             window.open("../../privacy_pop.php", "privacy_pop", "width=1230,height=630,scrollbars=yes,resizable=yes");
+         } else {
+             window.open("../../privacy_pop.php?cp=1", "privacy_pop", "width=1230,height=630,scrollbars=yes,resizable=yes");
+         }
+     }
+
+ }, complete: function (data) {
+     // 통신이 실패했어도 완료가 되었을 때 이 함수를 타게 된다.
+     // TODO
+
+
+ },
+ error: function (request, status, error) {
+     //alert("code:"+request.status+"\n"+"\n"+"error:"+error+" message:"+request.responseText);
+ }
+});
+}
+
+//재시험
+function reply_test(no, cno, qr, lbno, type) {
+$('input:hidden[name=uid]').val("");
+$('input:hidden[name=c_no]').val("");
+$('input:hidden[name=qr_no]').val("");
+$('input:hidden[name=lb_no]').val("");
+$('input:hidden[name=q_type]').val("");
+
+$('input:hidden[name=uid]').val(no);
+$('input:hidden[name=c_no]').val(cno);
+$('input:hidden[name=qr_no]').val(qr);
+$('input:hidden[name=lb_no]').val(lbno);
+$('input:hidden[name=q_type]').val(type);
+
+var ct_before = 0;
+
+
+var ct = 3 - ct_before;
+
+         if (ct < 1) {
+ alert("본 시험의 재시험은 3회까지 가능합니다.\n재시험 가능 횟수를 초과하였습니다.");
+ return false;
+} else {
+ if (confirm("본 과정은 재시험 3회까지 가능합니다.\n(재시험 가능 잔여 횟수 (" + ct + ")\n재시험 진행하시겠습니까?")) {
+     var popForm = window.open("", "re_test", "width=1000,height=900,scrollbars=yes,resizable=yes");
+     document.replyform.submit();
+ }
+}
+
+
+}
+
+//온라인프리패스 테스트아이디
+function freepassPop() {
+alert("온라인프리패스 신청시 수강이 가능합니다!");
+return false;
+}
+
+
+</script>
