@@ -37,6 +37,7 @@ app.on("activate", restoreOrCreateWindow);
 /**
  * Create the application window when the background process is ready.
  */
+app.commandLine.appendSwitch("disable-renderer-backgrounding");
 app
   .whenReady()
   .then(restoreOrCreateWindow)

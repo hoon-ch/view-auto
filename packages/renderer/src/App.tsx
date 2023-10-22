@@ -27,6 +27,9 @@ const App = () => {
     setWindowSize(initialSize);
 
     main.on<{ width: string; height: string }>("window-resize", handleResize);
+    main.on("console-log", (event): void => {
+      console.log("From main: ", event);
+    });
 
     return () => {
       main.off("window-resize", handleResize);

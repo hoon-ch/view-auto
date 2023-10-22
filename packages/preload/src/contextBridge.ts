@@ -28,6 +28,10 @@ export const main = {
   toggleBrowserView: () => {
     ipcRenderer.send("toggle-browser-view");
   },
+  timer: (durationInMinutes: number, callback: () => void) => {
+    ipcRenderer.send("timer", durationInMinutes);
+    ipcRenderer.on("timer-end", callback);
+  },
 };
 
 // browserView에서 사용할 모듈

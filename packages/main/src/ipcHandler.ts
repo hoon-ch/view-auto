@@ -3,6 +3,7 @@ import type { IpcMainEvent } from "electron";
 import { ipcMain } from "electron";
 import Store from "electron-store";
 import { setBrowserViewSize } from "./browserView";
+import { powerSaveBlocker } from "electron";
 
 const store = new Store();
 
@@ -11,6 +12,9 @@ export function initializeIpcHandlers(
   mainWindow: Electron.BrowserWindow,
 ) {
   let childWindow: Electron.BrowserWindow | null = null;
+
+  const blockerId = powerSaveBlocker.start("prevent-app-suspension");
+  console.log("prevent-app-suspension started :", powerSaveBlocker.isStarted(blockerId));
 
   ipcMain.on("get-current-window-size", (event: IpcMainEvent) => {
     const [width, height] = mainWindow.getSize();
@@ -35,6 +39,23 @@ export function initializeIpcHandlers(
     browserView.webContents.once("did-finish-load", () => {
       event.sender.send("url-load-complete", true);
     });
+  });
+
+  ipcMain.on("timer", (event: IpcMainEvent, durationInMinutes: number) => {
+    let timer = durationInMinutes * 60;
+    const interval = setInterval(() => {
+      timer -= 1;
+      if (timer <= 0) {
+        clearInterval(interval);
+        event.sender.send("timer-end");
+      }
+      // 남은 시간을 분과 초로 출력
+      console.log(`남은 시간: ${Math.floor(timer / 60)}분 ${timer % 60}초`);
+      mainWindow.webContents.send(
+        "console-log",
+        `남은 시간: ${Math.floor(timer / 60)}분 ${timer % 60}초`,
+      );
+    }, 1000);
   });
 
   ipcMain.on("execute-js-in-browserview", (event: IpcMainEvent, idx: string, js: string) => {
@@ -140,8 +161,11 @@ export function initializeIpcHandlers(
     }
   });
 
-  browserView.webContents.on("did-create-window", newWindow => {
+  browserView.webContents.on("did-create-window", (newWindow, details) => {
     if (newWindow) {
+      if (details.options.webPreferences) {
+        details.options.webPreferences.backgroundThrottling = false;
+      }
       childWindow = newWindow;
       childWindow?.hide();
       if (import.meta.env.DEV) {

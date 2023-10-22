@@ -67,7 +67,7 @@ const AutoPlay: React.FC<AutoPlayProps> = () => {
       const durationInMinutes = getRemainingLearningTime(lectures[targetLectureIdx].learningTime);
       const varPause = checkAndClickNext("auto-playing", durationInMinutes);
       setPauseFlag(varPause);
-
+      main.timer(durationInMinutes, () => view.stopAutoPlay());
       // 수강이 완료되거나 종료하여 창이 닫혔을때
       main.on("set-player", (value: boolean) => setIsPlaying(value));
     }
