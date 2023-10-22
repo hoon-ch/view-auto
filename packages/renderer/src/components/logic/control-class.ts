@@ -97,7 +97,7 @@ export const playTargetLecture = (channel: string, lectures: Lecture[], index: n
 export function getRemainingLearningTime(learningTime: string): number {
   const [learnedMinutes, totalMinutes] = learningTime.split("/").map(time => parseInt(time.trim()));
 
-  return totalMinutes - learnedMinutes;
+  return totalMinutes - learnedMinutes + 1;
 }
 
 export function timeChecker(durationInMinutes: number) {
@@ -167,6 +167,7 @@ export const parsePageInfo = (channel: string) => {
 };
 
 export const checkAndClickNext = (channel: string, durationInMinutes: number) => {
+  const randomXY = customAlphabet("1234567890", 3);
   const vars = {
     pauseFlag: nanoid(),
     checkAndClickNextFunc: nanoid(),
@@ -218,6 +219,14 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
               console.log("[while] 다음 버튼 클릭");
               document.querySelector('.page-btn-sec .next').click();
             }
+
+            document.dispatchEvent(new MouseEvent('mousemove', {
+              'view': window,
+              'bubbles': true,
+              'cancelable': true,
+              'clientX': ${randomXY()},  // X 좌표
+              'clientY': ${randomXY()}   // Y 좌표
+            }));
 
             console.log("[while] 10초 대기");
             await new Promise(resolve => setTimeout(resolve, 10000));  // 10초 대기

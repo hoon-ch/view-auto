@@ -144,6 +144,9 @@ export function initializeIpcHandlers(
     if (newWindow) {
       childWindow = newWindow;
       childWindow?.hide();
+      if (import.meta.env.DEV) {
+        childWindow?.webContents.openDevTools();
+      }
 
       setTimeout(() => {
         mainWindow.webContents.send("set-player", true);
