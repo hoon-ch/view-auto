@@ -1,12 +1,11 @@
 {
   "name": "view-auto",
   "description": "Secure boilerplate for Electron app based on Vite",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "private": true,
   "author": {
-    "email": "kozackunisoft@gmail.com",
-    "name": "Alex Kozack",
-    "url": "https://kozack.me"
+    "email": "hun9211@gmail.com",
+    "name": "YoungHoon Chung"
   },
   "main": "packages/main/dist/index.cjs",
   "scripts": {
