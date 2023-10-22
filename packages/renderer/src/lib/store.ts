@@ -20,3 +20,19 @@ export const classState = atom({
   totalEvaluations: "",
   takenEvaluations: "",
 });
+
+export interface Lecture {
+  idx: number;
+  title: string;
+  progress: number;
+  learningTime: string;
+  recent: string;
+  status: "pending" | "processing" | "done";
+  link: string;
+}
+
+export const lectureState = atom<Lecture[]>([]);
+
+export const playing = atom(false);
+
+export const viewState = atom(true);

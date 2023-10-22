@@ -8,12 +8,15 @@ import { DevTools } from "jotai-devtools";
 import { Button } from "./components/ui/button";
 import { main } from "#preload";
 import { Toaster } from "@/components/ui/toaster";
+import { useAtom } from "jotai";
+import { viewState } from "./lib/store";
 
 const App = () => {
   const [windowSize, setWindowSize] = useState<{ width: string; height: string }>({
     width: "100px",
     height: "100px",
   });
+  const [showView, setShowView] = useAtom(viewState);
 
   useEffect(() => {
     const handleResize = (event: { width: string; height: string }) => {
@@ -31,28 +34,30 @@ const App = () => {
   }, []);
 
   const handleToggleView = () => {
+    setShowView(!showView);
     main.toggleBrowserView();
   };
 
   const appStyle: React.CSSProperties = {
-    height: `${Number(windowSize.height) * 0.2}px`,
+    height: `${Number(windowSize.height) * 0.35}px`,
     width: `${Number(windowSize.width)}px`,
   };
   return (
     <>
-      <DevTools isInitialOpen />
+      <DevTools />
       <div
         className="flex w-full flex-col"
         style={appStyle}
       >
-        <div className="flex-auto">
+        <div className="h-full w-full flex-auto">
           <div className="flex h-full w-full flex-col items-center justify-center space-y-4 overflow-x-auto bg-slate-50">
             <Controller />
           </div>
         </div>
       </div>
       <Button
-        className="fixed left-2 top-[26.5%]"
+        variant={"secondary"}
+        className="fixed top-[36.5%]"
         onClick={handleToggleView}
       >
         view

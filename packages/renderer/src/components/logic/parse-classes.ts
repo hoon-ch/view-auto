@@ -8,7 +8,6 @@ const nanoid = customAlphabet(alphabet, 10);
 export const classList = (channel: string) => {
   const vars = {
     courses: nanoid(),
-    rows: nanoid(),
   };
   view.injectJS(
     channel,
@@ -17,9 +16,7 @@ export const classList = (channel: string) => {
           let ${vars.courses} = [];
 
           // 모든 강좌 정보가 저장된 행을 선택
-          let ${vars.rows} = document.querySelectorAll('.l_ing_tbl tr:not(:first-child)');
-
-          ${vars.rows}.forEach(row => {
+          document.querySelectorAll('.l_ing_tbl tr:not(:first-child)').forEach(row => {
               let courseInfo = {};
 
               // 강좌 제목 추출

@@ -2,6 +2,7 @@ import axios from "axios";
 import type { IpcMainEvent } from "electron";
 import { ipcMain } from "electron";
 import Store from "electron-store";
+import { setBrowserViewSize } from "./browserView";
 
 const store = new Store();
 
@@ -9,7 +10,7 @@ export function initializeIpcHandlers(
   browserView: Electron.BrowserView,
   mainWindow: Electron.BrowserWindow,
 ) {
-  let childWindow: Electron.BrowserWindow;
+  let childWindow: Electron.BrowserWindow | null = null;
 
   ipcMain.on("get-current-window-size", (event: IpcMainEvent) => {
     const [width, height] = mainWindow.getSize();
@@ -28,8 +29,12 @@ export function initializeIpcHandlers(
     store.delete(key);
   });
 
-  ipcMain.on("go", (_: IpcMainEvent, url: string) => {
+  ipcMain.on("navigate-to-url", (event, url) => {
     browserView.webContents.loadURL(url);
+
+    browserView.webContents.once("did-finish-load", () => {
+      event.sender.send("url-load-complete", true);
+    });
   });
 
   ipcMain.on("execute-js-in-browserview", (event: IpcMainEvent, idx: string, js: string) => {
@@ -37,13 +42,35 @@ export function initializeIpcHandlers(
       browserView.webContents
         .executeJavaScript(js)
         .then((result: unknown) => {
-          console.log("🚀 ~ file: ipcHandler.ts:41 ~ .then ~ result:", result);
-          console.log("🚀 ~ file: ipcHandler.ts:41 ~ .then ~ idx:", idx);
+          console.log(
+            "🚀 ~ file: ipcHandler.ts:43 ~ .execute-js-in-browserview ~ idx, result:",
+            idx,
+            result,
+          );
           event.reply(idx, result);
         })
         .catch((error: Error) => {
           console.error("Error executing JavaScript:", error);
           event.reply("js-executed", { error: error.message });
+        });
+    }
+  });
+
+  ipcMain.on("inject-to-player", (event: IpcMainEvent, idx: string, js: string) => {
+    if (childWindow) {
+      childWindow.webContents
+        .executeJavaScript(js)
+        .then((result: unknown) => {
+          console.log(
+            "🚀 ~ file: ipcHandler.ts:57 ~ .inject-to-player ~ idx, result:",
+            idx,
+            result,
+          );
+          event.reply(idx, result);
+        })
+        .catch((error: Error) => {
+          console.error("Error executing JavaScript to Player:", error);
+          event.reply("js-executed-to-player", { error: error.message });
         });
     }
   });
@@ -73,7 +100,7 @@ export function initializeIpcHandlers(
   let isBrowserViewHidden = false;
   ipcMain.on("toggle-browser-view", () => {
     if (isBrowserViewHidden) {
-      setBrowserViewSize(browserView, mainWindow);
+      setBrowserViewSize(mainWindow, browserView);
     } else {
       browserView?.setBounds({ x: 0, y: 0, width: 0, height: 0 });
     }
@@ -84,7 +111,7 @@ export function initializeIpcHandlers(
   mainWindow.on("resize", () => {
     if (isBrowserViewHidden) return;
     if (!mainWindow) return;
-    setBrowserViewSize(browserView, mainWindow);
+    setBrowserViewSize(mainWindow, browserView);
     const [width, height] = mainWindow.getSize();
     mainWindow?.webContents.send("window-resize", { width, height });
   });
@@ -114,16 +141,35 @@ export function initializeIpcHandlers(
   });
 
   browserView.webContents.on("did-create-window", newWindow => {
-    childWindow = newWindow;
-    childWindow.hide();
+    if (newWindow) {
+      childWindow = newWindow;
+      childWindow?.hide();
 
-    mainWindow.webContents.send("start-study", "true");
+      setTimeout(() => {
+        mainWindow.webContents.send("set-player", true);
+      }, 2000);
+      childWindow?.on("closed", () => {
+        mainWindow.webContents.send("set-player", false);
+        childWindow = null;
+      });
+    }
+  });
+
+  ipcMain.on("stop-auto-play", () => {
+    if (childWindow) {
+      mainWindow.webContents.send("set-player", false);
+      childWindow.close();
+      childWindow.destroy();
+      childWindow = null;
+    } else {
+      console.error("childWindow is null");
+    }
   });
 
   ipcMain.on("toggle-child-window", () => {
-    if (childWindow.isVisible()) {
+    if (childWindow && childWindow.isVisible()) {
       childWindow.hide();
-    } else {
+    } else if (childWindow) {
       childWindow.show();
     }
   });
@@ -133,29 +179,6 @@ type AccountInfo = {
   id: string;
   password: string;
 };
-
-function setBrowserViewSize(browserView: Electron.BrowserView, mainWindow: Electron.BrowserWindow) {
-  const [windowWidth, windowHeight] = mainWindow.getSize();
-
-  // 전체 높이의 20% 계산
-  const yOffset = Math.round(windowHeight * 0.3);
-
-  // 남은 높이 중 90% 계산
-  const viewHeight = Math.round((windowHeight - yOffset) * 0.9);
-
-  // 너비는 전체 창의 너비의 90%를 사용
-  const viewWidth = Math.round(windowWidth * 0.9);
-
-  // x 좌표는 (전체 창 너비 - BrowserView의 너비) / 2 로 설정
-  const xOffset = Math.round((windowWidth - viewWidth) / 2);
-
-  browserView.setBounds({
-    x: xOffset,
-    y: yOffset,
-    width: viewWidth,
-    height: viewHeight,
-  });
-}
 
 async function getPHPSESSIDFromBrowserView(browserView: Electron.BrowserView): Promise<string> {
   const cookieMatchScript = `

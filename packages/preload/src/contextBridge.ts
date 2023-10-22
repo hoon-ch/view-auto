@@ -32,8 +32,22 @@ export const main = {
 
 // browserView에서 사용할 모듈
 export const view = {
-  go: (url: string) => {
-    return ipcRenderer.send("go", url);
+  go: async (url: string): Promise<boolean> => {
+    return new Promise(resolve => {
+      // URL로 이동
+      ipcRenderer.send("navigate-to-url", url);
+
+      // 로딩 완료 이벤트 핸들러
+      const handler = (_: Electron.IpcRendererEvent, data: boolean) => {
+        if (data === true) {
+          resolve(true);
+          ipcRenderer.removeListener("url-load-complete", handler);
+        }
+      };
+
+      // 로딩 완료 이벤트를 듣기
+      ipcRenderer.on("url-load-complete", handler);
+    });
   },
   injectJS: (idx: string, js: string) => {
     return ipcRenderer.send("execute-js-in-browserview", idx, js);
@@ -46,5 +60,11 @@ export const view = {
   },
   getLoginPermission: (account: unknown) => {
     return ipcRenderer.sendSync("get-login-permission", account);
+  },
+  injectToPlayer: (idx: string, js: string) => {
+    return ipcRenderer.send("inject-to-player", idx, js);
+  },
+  stopAutoPlay: () => {
+    return ipcRenderer.send("stop-auto-play");
   },
 };

@@ -27,6 +27,7 @@ const ListView: React.FC = () => {
   const [, setClassState] = useAtom(classState);
 
   useEffect(() => {
+    view.go("https://www.lcampus.co.kr/_StyleBox4/My_Campus/index.php");
     setTimeout(() => {
       classList("class-list");
     }, 1000);

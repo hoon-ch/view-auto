@@ -47,11 +47,11 @@ function setBrowserViewSize(
 
   const [windowWidth, windowHeight] = mainWindow.getSize();
 
-  // 전체 높이의 20% 계산
-  const yOffset = Math.round(windowHeight * 0.3);
+  // 전체 높이의 30% 계산
+  const yOffset = Math.round(windowHeight * 0.4);
 
   // 남은 높이 중 90% 계산
-  const viewHeight = Math.round((windowHeight - yOffset) * 0.9);
+  const viewHeight = Math.round((windowHeight - yOffset) * 0.75);
 
   // 너비는 전체 창의 너비의 90%를 사용
   const viewWidth = Math.round(windowWidth * 0.9);
