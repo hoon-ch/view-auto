@@ -12,6 +12,7 @@ export function initializeIpcHandlers(
   mainWindow: Electron.BrowserWindow,
 ) {
   let childWindow: Electron.BrowserWindow | null = null;
+  let intervalId: string | number | NodeJS.Timeout | undefined;
 
   const blockerId = powerSaveBlocker.start("prevent-app-suspension");
   console.log("prevent-app-suspension started :", powerSaveBlocker.isStarted(blockerId));
@@ -43,10 +44,10 @@ export function initializeIpcHandlers(
 
   ipcMain.on("timer", (event: IpcMainEvent, durationInMinutes: number) => {
     let timer = durationInMinutes * 60;
-    const interval = setInterval(() => {
+    intervalId = setInterval(() => {
       timer -= 1;
       if (timer <= 0) {
-        clearInterval(interval);
+        clearInterval(intervalId);
         event.sender.send("timer-end");
       }
       // 남은 시간을 분과 초로 출력
@@ -176,6 +177,7 @@ export function initializeIpcHandlers(
         mainWindow.webContents.send("set-player", true);
       }, 2000);
       childWindow?.on("closed", () => {
+        clearInterval(intervalId); // childWindow가 닫히면 타이머를 정지
         mainWindow.webContents.send("set-player", false);
         childWindow = null;
       });
