@@ -32,6 +32,20 @@ async function setCookieBeforeLoading(browserView: BrowserView): Promise<void> {
       path: "/",
       expries: new Date().setDate(new Date().getDate() + 7),
     },
+    {
+      url: "https://www.lcampus.co.kr/",
+      name: "browserGuide1Day",
+      value: "true",
+      path: "/",
+      expries: new Date().setDate(new Date().getDate() + 7),
+    },
+    {
+      url: "https://www.lcampus.co.kr/",
+      name: "browserGuide7Day",
+      value: "true",
+      path: "/",
+      expries: new Date().setDate(new Date().getDate() + 7),
+    },
   ];
 
   for (const c of cookies) {
