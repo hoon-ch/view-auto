@@ -56,7 +56,7 @@ const ListView: React.FC = () => {
           학습완료
         </Button>
       );
-    } 
+    }
     //else if (item.title.includes("스마트워크")) {
     //  return (
     //    <Button
@@ -66,7 +66,7 @@ const ListView: React.FC = () => {
     //      미지원
     //    </Button>
     //  );
-    //} 
+    //}
     else {
       return (
         <Button
