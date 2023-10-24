@@ -180,19 +180,12 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
     console.log("checkAndClickNext injected");
 
     async function ${vars.checkAndClickNextFunc}() {
-        console.log("start checking");
         let remainingSeconds = ${durationInMinutes} * 60; // 분을 초로 변환
-        let timerFlag = false;
-        // 타이머 시작
-        const interval = setInterval(() => {
-          if (remainingSeconds <= 0) {
-              clearInterval(interval); // 주어진 시간에 도달했으면 타이머를 멈춤
-              timerFlag = true;
-          } else {
-              console.log('[Timer] 남은시간: ' + Math.floor(remainingSeconds/60) + '분 ' + remainingSeconds%60 + '초');
-              remainingSeconds--;
-          }
-        }, 1000);
+        if(gotoNextPage){
+          // 신강의
+        } else {
+          // 구강의
+        }
 
         while (true) {
             if (${vars.pauseFlag}) {
@@ -209,15 +202,21 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
               document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
             }
 
-            if (current === last && timerFlag) {
-              console.log("[while] 강의가 끝났습니다.");
-              window.close();
-              break;
+            if (current === last) {
+              await new Promise(resolve => setTimeout(resolve, 10000));
+              continue;
             }
 
             if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
               console.log("[while] 다음 버튼 클릭");
               document.querySelector('.page-btn-sec .next').click();
+            }
+
+            if (gotoNextPage && nowPageNum !== totalPages) {
+              setTimeout(()=>{
+                console.log("[while] 다음 버튼 클릭");
+                gotoNextPage();
+              }, 10000);
             }
 
             document.dispatchEvent(new MouseEvent('mousemove', {
