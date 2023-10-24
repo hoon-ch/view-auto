@@ -56,16 +56,18 @@ const ListView: React.FC = () => {
           학습완료
         </Button>
       );
-    } else if (item.title.includes("스마트워크")) {
-      return (
-        <Button
-          variant={"destructive"}
-          className="cursor-not-allowed"
-        >
-          미지원
-        </Button>
-      );
-    } else {
+    } 
+    //else if (item.title.includes("스마트워크")) {
+    //  return (
+    //    <Button
+    //      variant={"destructive"}
+    //      className="cursor-not-allowed"
+    //    >
+    //      미지원
+    //    </Button>
+    //  );
+    //} 
+    else {
       return (
         <Button
           onClick={() => {
