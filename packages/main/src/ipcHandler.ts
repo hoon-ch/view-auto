@@ -13,6 +13,7 @@ export function initializeIpcHandlers(
 ) {
   let childWindow: Electron.BrowserWindow | null = null;
   let intervalId: string | number | NodeJS.Timeout | undefined;
+  let injectToPlayerJS: string | undefined;
 
   const blockerId = powerSaveBlocker.start("prevent-app-suspension");
   console.log("prevent-app-suspension started :", powerSaveBlocker.isStarted(blockerId));
@@ -78,24 +79,23 @@ export function initializeIpcHandlers(
     }
   });
 
-  ipcMain.on("inject-to-player", (event: IpcMainEvent, idx: string, js: string) => {
-    if (childWindow) {
-      childWindow.webContents
-        .executeJavaScript(js)
-        .then((result: unknown) => {
-          console.log(
-            "🚀 ~ file: ipcHandler.ts:57 ~ .inject-to-player ~ idx, result:",
-            idx,
-            result,
-          );
-          event.reply(idx, result);
-        })
-        .catch((error: Error) => {
-          console.error("Error executing JavaScript to Player:", error);
-          event.reply("js-executed-to-player", { error: error.message });
-        });
-    }
-  });
+  ipcMain.on(
+    "inject-to-player",
+    (event: IpcMainEvent, idx: string, funcName: string, js: string) => {
+      if (idx === "auto-playing") injectToPlayerJS = js;
+      if (childWindow) {
+        childWindow.webContents
+          .executeJavaScript(js)
+          .then((result: unknown) => {
+            event.reply(idx, result);
+          })
+          .catch((error: Error) => {
+            console.error("Error executing JavaScript to Player:", error);
+            event.reply("js-executed-to-player", { error: error.message });
+          });
+      }
+    },
+  );
 
   ipcMain.handle("check-login", async () => {
     if (browserView) {
@@ -171,6 +171,24 @@ export function initializeIpcHandlers(
       childWindow?.hide();
       if (import.meta.env.DEV) {
         childWindow?.webContents.openDevTools();
+      }
+
+      if (childWindow) {
+        // URL이 변경될 때마다 이벤트가 발생합니다.
+        childWindow.webContents.on("did-navigate", (event, url) => {
+          console.log(`childWindow의 URL이 변경되었습니다: ${url}`);
+          // URL 변경에 대한 추가 처리를 여기에 추가할 수 있습니다.
+          if (injectToPlayerJS) {
+            childWindow?.webContents.executeJavaScript(injectToPlayerJS).then(result => {
+              console.log("🚀 ~ file: ipcHandler.ts:57 ~ .inject-to-player ~ idx, result:", result);
+            });
+          }
+        });
+
+        childWindow.webContents.on("did-navigate-in-page", (event, url) => {
+          console.log(`childWindow 내부 페이지의 URL이 변경되었습니다: ${url}`);
+          // 내부 페이지 URL 변경에 대한 추가 처리를 여기에 추가할 수 있습니다.
+        });
       }
 
       setTimeout(() => {

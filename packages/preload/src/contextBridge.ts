@@ -65,7 +65,10 @@ export const view = {
   getLoginPermission: (account: unknown) => {
     return ipcRenderer.sendSync("get-login-permission", account);
   },
-  injectToPlayer: (idx: string, js: string) => {
+  injectToPlayer: (idx: string, funcName: string, js: string) => {
+    return ipcRenderer.send("inject-to-player", idx, funcName, js);
+  },
+  injectToPlayerPause: (idx: string, js: string) => {
     return ipcRenderer.send("inject-to-player", idx, js);
   },
   stopAutoPlay: () => {

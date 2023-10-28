@@ -139,6 +139,7 @@ export const parsePageInfo = (channel: string) => {
   };
   view.injectToPlayer(
     channel,
+    vars.pageObserver,
     `
     console.log("MutationObserver 객체 생성");
     const ${vars.pageObserver} = new MutationObserver(
@@ -175,17 +176,13 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
   console.log("🚀 ~ file: control-class.ts:163 ~ checkAndClickNext ~ vars:", vars);
   view.injectToPlayer(
     channel,
+    vars.checkAndClickNextFunc,
     `
     let ${vars.pauseFlag} = false;
     console.log("checkAndClickNext injected");
 
     async function ${vars.checkAndClickNextFunc}() {
         let remainingSeconds = ${durationInMinutes} * 60; // 분을 초로 변환
-        if(gotoNextPage){
-          // 신강의
-        } else {
-          // 구강의
-        }
 
         while (true) {
             if (${vars.pauseFlag}) {
@@ -194,29 +191,33 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
               continue;
             }
 
-            const [current, last] = document.querySelector('.footer-sec .page-btn-sec strong').textContent.split('/').map(i => parseInt(i.trim(), 10));
+            if(gotoNextPage){
+              // 신강의
+              if (gotoNextPage && nowPageNum !== totalPages) {
+                setTimeout(()=>{
+                  console.log("[while] 다음 버튼 클릭");
+                  gotoNextPage();
+                }, 10000);
+              }
+            } else {
+              // 구강의
+              const [current, last] = document.querySelector('.footer-sec .page-btn-sec strong').textContent.split('/').map(i => parseInt(i.trim(), 10));
 
-            console.log("[while] 현재페이지/전체페이지: "+current+"/"+last);
+              console.log("[while] 현재페이지/전체페이지: "+current+"/"+last);
 
-            if(document.querySelector('.confirm-popup')){
-              document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
-            }
+              if(document.querySelector('.confirm-popup')){
+                document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
+              }
 
-            if (current === last) {
-              await new Promise(resolve => setTimeout(resolve, 10000));
-              continue;
-            }
+              if (current === last) {
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                continue;
+              }
 
-            if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
-              console.log("[while] 다음 버튼 클릭");
-              document.querySelector('.page-btn-sec .next').click();
-            }
-
-            if (gotoNextPage && nowPageNum !== totalPages) {
-              setTimeout(()=>{
+              if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
                 console.log("[while] 다음 버튼 클릭");
-                gotoNextPage();
-              }, 10000);
+                document.querySelector('.page-btn-sec .next').click();
+              }
             }
 
             document.dispatchEvent(new MouseEvent('mousemove', {

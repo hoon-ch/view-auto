@@ -103,10 +103,10 @@ const AutoPlay: React.FC<AutoPlayProps> = () => {
     if (pauseFlag === "") return;
     if (isPause) {
       // 일시 중지 상태
-      view.injectToPlayer("play-pause", `${pauseFlag} = true;`);
+      view.injectToPlayerPause("play-pause", `${pauseFlag} = true;`);
     } else if (!isPause) {
       // 재생 상태
-      view.injectToPlayer("play-pause", `${pauseFlag} = false;`);
+      view.injectToPlayerPause("play-pause", `${pauseFlag} = false;`);
     }
   }, [isPause, pauseFlag]);
 
