@@ -6,7 +6,7 @@ const WINDOW_SIZE = { width: 1200, height: 800, minWidth: 1121, minHeight: 620 }
 async function createWindow() {
   const browserWindow = new BrowserWindow({
     ...WINDOW_SIZE,
-    show: false, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
+    show: true, // Use the 'ready-to-show' event to show the instantiated BrowserWindow.
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -24,13 +24,14 @@ async function createWindow() {
    *
    * @see https://github.com/electron/electron/issues/25012 for the afford mentioned issue.
    */
-  browserWindow.on("ready-to-show", () => {
-    browserWindow?.show();
+  // browserWindow.on("ready-to-show", () => {
+  //   // browserWindow?.show();
+  //   browserWindow?.showInactive();
 
-    if (import.meta.env.DEV) {
-      browserWindow?.webContents.openDevTools();
-    }
-  });
+  //   if (import.meta.env.DEV) {
+  //     browserWindow?.webContents.openDevTools();
+  //   }
+  // });
 
   /**
    * Load the main page of the main window.
