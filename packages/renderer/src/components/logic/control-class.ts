@@ -224,8 +224,9 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
                   selectRandomOptions();
                 }
                 await new Promise(resolve => setTimeout(resolve, 1000));
-              } else if (gotoNextPage && nowPageNum === totalPages) {
-                window.close();
+              } else if (nowPageNum === totalPages) {
+                console.log("강의끝");
+                await new Promise(resolve => setTimeout(resolve, 1000));
               }
             } else {
               // 구강의
