@@ -166,8 +166,10 @@ export function initializeIpcHandlers(
     if (newWindow) {
       if (details.options.webPreferences) {
         details.options.webPreferences.backgroundThrottling = false;
+        details.options.focusable = false;
       }
       childWindow = newWindow;
+      childWindow.webContents.setAudioMuted(true);
       childWindow?.hide();
       if (import.meta.env.DEV) {
         childWindow?.webContents.openDevTools();
@@ -179,9 +181,7 @@ export function initializeIpcHandlers(
           console.log(`childWindow의 URL이 변경되었습니다: ${url}`);
           // URL 변경에 대한 추가 처리를 여기에 추가할 수 있습니다.
           if (injectToPlayerJS) {
-            childWindow?.webContents.executeJavaScript(injectToPlayerJS).then(result => {
-              console.log("🚀 ~ file: ipcHandler.ts:57 ~ .inject-to-player ~ idx, result:", result);
-            });
+            childWindow?.webContents.executeJavaScript(injectToPlayerJS);
           }
         });
 
