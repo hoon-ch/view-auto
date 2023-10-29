@@ -97,7 +97,7 @@ export const playTargetLecture = (channel: string, lectures: Lecture[], index: n
 export function getRemainingLearningTime(learningTime: string): number {
   const [learnedMinutes, totalMinutes] = learningTime.split("/").map(time => parseInt(time.trim()));
 
-  return totalMinutes - learnedMinutes + 1;
+  return totalMinutes - learnedMinutes + 5;
 }
 
 export function timeChecker(durationInMinutes: number) {
@@ -191,13 +191,41 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
               continue;
             }
 
-            if(gotoNextPage){
+            if (gotoNextPage) {
               // 신강의
               if (gotoNextPage && nowPageNum !== totalPages) {
-                setTimeout(()=>{
-                  console.log("[while] 다음 버튼 클릭");
-                  gotoNextPage();
-                }, 10000);
+                let video = document.querySelector("video");
+                let questChocie = document.querySelector(".quest.choice");
+                let finalQuestions = document.querySelectorAll("div.scroll dl");
+                video && video.addEventListener("ended", ()=>setTimeout(gotoNextPage, 1500));
+                questChocie && setTimeout(gotoNextPage, 1500);
+
+                if (video && video.paused) video.play();
+                if (finalQuestions.length > 0) {
+                  function selectRandomOptions() {
+                    // 모든 질문을 가져옵니다 (dl 태그)
+                    var questions = document.querySelectorAll("div.scroll dl");
+                    var submit = document.querySelector(".btn_wrap").querySelector("input");
+
+                    // 각 질문에 대해 루프를 실행합니다
+                    questions.forEach(function (question) {
+                      // 질문에 속한 선택지들을 가져옵니다 ('style="display: none;"'가 아닌 dd 태그)
+                      var options = question.querySelectorAll('dd:not([style*="display: none"])');
+
+                      // 랜덤으로 선택지를 선택합니다
+                      var randomOption = options[Math.floor(Math.random() * options.length)];
+
+                      randomOption.click();
+                    });
+                    submit.click();
+                    setTimeout(gotoNextPage, 3000);
+                  }
+                  // 함수를 호출하여 랜덤으로 선택지를 선택합니다
+                  selectRandomOptions();
+                }
+                await new Promise(resolve => setTimeout(resolve, 1000));
+              } else if (gotoNextPage && nowPageNum === totalPages) {
+                window.close();
               }
             } else {
               // 구강의
@@ -218,18 +246,18 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
                 console.log("[while] 다음 버튼 클릭");
                 document.querySelector('.page-btn-sec .next').click();
               }
+              document.dispatchEvent(new MouseEvent('mousemove', {
+                'view': window,
+                'bubbles': true,
+                'cancelable': true,
+                'clientX': ${randomXY()},  // X 좌표
+                'clientY': ${randomXY()}   // Y 좌표
+              }));
+
+              console.log("[while] 10초 대기");
+              await new Promise(resolve => setTimeout(resolve, 10000));  // 10초 대기
             }
 
-            document.dispatchEvent(new MouseEvent('mousemove', {
-              'view': window,
-              'bubbles': true,
-              'cancelable': true,
-              'clientX': ${randomXY()},  // X 좌표
-              'clientY': ${randomXY()}   // Y 좌표
-            }));
-
-            console.log("[while] 10초 대기");
-            await new Promise(resolve => setTimeout(resolve, 10000));  // 10초 대기
         }
     }
 
