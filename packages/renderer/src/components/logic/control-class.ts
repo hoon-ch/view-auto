@@ -173,7 +173,6 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
     pauseFlag: nanoid(),
     checkAndClickNextFunc: nanoid(),
   };
-  console.log("🚀 ~ file: control-class.ts:163 ~ checkAndClickNext ~ vars:", vars);
   view.injectToPlayer(
     channel,
     vars.checkAndClickNextFunc,
@@ -257,6 +256,69 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
 
               console.log("[while] 10초 대기");
               await new Promise(resolve => setTimeout(resolve, 10000));  // 10초 대기
+            }
+
+        }
+    }
+
+    ${vars.checkAndClickNextFunc}()
+`,
+  );
+  return vars.pauseFlag;
+};
+
+export const justOnce = (channel: string) => {
+  const vars = {
+    pauseFlag: nanoid(),
+    checkAndClickNextFunc: nanoid(),
+  };
+  view.injectToPlayer(
+    channel,
+    vars.checkAndClickNextFunc,
+    `
+    let ${vars.pauseFlag} = false;
+    console.log("checkAndClickNext injected");
+
+    async function ${vars.checkAndClickNextFunc}() {
+        while (true) {
+            if (${vars.pauseFlag}) {
+              console.log("[while] 일시정지");
+              await new Promise(resolve => setTimeout(resolve, 1000));
+              continue;
+            }
+
+            if (gotoNextPage) {
+              // 신강의
+              if (gotoNextPage && nowPageNum !== totalPages) {
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                gotoNextPage();
+              } else if (nowPageNum === totalPages) {
+                console.log("강의끝");
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                window.close();
+              }
+            } else {
+              // 구강의
+              const [current, last] = document.querySelector('.footer-sec .page-btn-sec strong').textContent.split('/').map(i => parseInt(i.trim(), 10));
+
+              console.log("[while] 현재페이지/전체페이지: "+current+"/"+last);
+
+              if(document.querySelector('.confirm-popup')){
+                document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
+              }
+
+              if (current === last) {
+                await new Promise(resolve => setTimeout(resolve, 10000));
+                window.close();
+              }
+
+              if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
+                console.log("[while] 다음 버튼 클릭");
+                document.querySelector('.page-btn-sec .next').click();
+              }
+
+              console.log("[while] 2초 대기");
+              await new Promise(resolve => setTimeout(resolve, 2000));  // 10초 대기
             }
 
         }

@@ -19,6 +19,7 @@ import {
   getPriorityIndex,
   playTargetLecture,
   getRemainingLearningTime,
+  justOnce,
 } from "../logic/control-class";
 import { main, view } from "#preload";
 
@@ -65,10 +66,15 @@ const AutoPlay: React.FC<AutoPlayProps> = () => {
     main.on("set-player", (value: boolean) => setPlayerWindow(value));
     if (playerWindow) {
       const durationInMinutes = getRemainingLearningTime(lectures[targetLectureIdx].learningTime);
-      const varPause = checkAndClickNext("auto-playing", durationInMinutes);
-      setPauseFlag(varPause);
-      main.timer(durationInMinutes, () => view.stopAutoPlay());
-      // 수강이 완료되거나 종료하여 창이 닫혔을때
+      console.log("🚀 ~ file: AutoPlay.tsx:69 ~ useEffect ~ durationInMinutes:", durationInMinutes);
+      if (lectures[targetLectureIdx].progress !== 100 && durationInMinutes <= 0) {
+        justOnce("one-time-play");
+      } else {
+        const varPause = checkAndClickNext("auto-playing", durationInMinutes);
+        setPauseFlag(varPause);
+        main.timer(durationInMinutes, () => view.stopAutoPlay());
+        // 수강이 완료되거나 종료하여 창이 닫혔을때
+      }
       main.on("set-player", (value: boolean) => setIsPlaying(value));
     }
   }, [playerWindow, targetLectureIdx, lectures, setIsPlaying]);

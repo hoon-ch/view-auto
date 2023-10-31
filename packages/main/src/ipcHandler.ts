@@ -82,7 +82,7 @@ export function initializeIpcHandlers(
   ipcMain.on(
     "inject-to-player",
     (event: IpcMainEvent, idx: string, funcName: string, js: string) => {
-      if (idx === "auto-playing") injectToPlayerJS = js;
+      if (idx === "auto-playing" || idx === "one-time-play") injectToPlayerJS = js;
       if (childWindow) {
         childWindow.webContents
           .executeJavaScript(js)

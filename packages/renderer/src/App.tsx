@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Controller from "@/components/pages/Controller";
 import { DevTools } from "jotai-devtools";
 import { Button } from "./components/ui/button";
-import { main, packageVersion } from "#preload";
+import { main } from "#preload";
 import { Toaster } from "@/components/ui/toaster";
 import { useAtom } from "jotai";
 import { viewState } from "./lib/store";
@@ -65,7 +65,7 @@ const App = () => {
       >
         view
       </Button>
-      <div className="absolute bottom-2 right-2 text-white">v{packageVersion}</div>
+      <div className="absolute bottom-2 right-2 text-white">v0.0.12</div>
       <Toaster />
       {/* <Sample /> */}
     </>
