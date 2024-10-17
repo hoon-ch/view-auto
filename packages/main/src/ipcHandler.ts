@@ -52,10 +52,10 @@ export function initializeIpcHandlers(
         event.sender.send("timer-end");
       }
       // 남은 시간을 분과 초로 출력
-      console.log(`남은 시간: ${Math.floor(timer / 60)}분 ${timer % 60}초`);
+      console.log(`Remaining time: ${Math.floor(timer / 60)}m ${timer % 60}s`);
       mainWindow.webContents.send(
         "console-log",
-        `남은 시간: ${Math.floor(timer / 60)}분 ${timer % 60}초`,
+        `Remaining time: ${Math.floor(timer / 60)}m ${timer % 60}s`,
       );
     }, 1000);
   });
@@ -178,7 +178,7 @@ export function initializeIpcHandlers(
       if (childWindow) {
         // URL이 변경될 때마다 이벤트가 발생합니다.
         childWindow.webContents.on("did-navigate", (event, url) => {
-          console.log(`childWindow의 URL이 변경되었습니다: ${url}`);
+          console.log(`The URL of the childWindow has changed: ${url}`);
           // URL 변경에 대한 추가 처리를 여기에 추가할 수 있습니다.
           if (injectToPlayerJS) {
             childWindow?.webContents.executeJavaScript(injectToPlayerJS);
@@ -186,7 +186,7 @@ export function initializeIpcHandlers(
         });
 
         childWindow.webContents.on("did-navigate-in-page", (event, url) => {
-          console.log(`childWindow 내부 페이지의 URL이 변경되었습니다: ${url}`);
+          console.log(`The URL of the childWindow internal page has changed: ${url}`);
           // 내부 페이지 URL 변경에 대한 추가 처리를 여기에 추가할 수 있습니다.
         });
       }

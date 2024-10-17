@@ -43,7 +43,7 @@ const AutoPlay: React.FC<AutoPlayProps> = () => {
   useEffect(() => {
     const priorityIndex = getPriorityIndex(lectures);
     if (priorityIndex === -1) {
-      console.log("모든 강의를 수강하였습니다.");
+      console.log("You've taken all the lessons.");
       setIsPlaying(false);
       setAppState(prev => ({ ...prev, isSelected: false }));
     } else {
@@ -53,7 +53,7 @@ const AutoPlay: React.FC<AutoPlayProps> = () => {
 
   // targetIdx가 set 되었을 때, 수강 시작
   useEffect(() => {
-    console.log(`${targetLectureIdx + 1} 차시를 수강합니다.`);
+    console.log(`Take the ${targetLectureIdx + 1} class.`);
     console.log(`${lectures[targetLectureIdx].link}`);
     // '수업 듣기' 버튼 클릭
     if (targetLectureIdx !== undefined && targetLectureIdx !== null) {
