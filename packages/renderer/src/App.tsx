@@ -65,7 +65,7 @@ const App = () => {
       >
         view
       </Button>
-      <div className="absolute bottom-2 right-2 text-white">v0.0.12</div>
+      <div className="absolute bottom-2 right-2 text-white">v0.0.13</div>
       <Toaster />
       {/* <Sample /> */}
     </>
