@@ -90,8 +90,8 @@ export const getPriorityIndex = (lectures: Lecture[]): number => {
 };
 
 export const playTargetLecture = (channel: string, lectures: Lecture[], index: number) => {
-  console.log(channel, `${lectures[index].link}; console.log("재생 시작");`);
-  view.injectJS(channel, `${lectures[index].link}; console.log("재생 시작");`);
+  console.log(channel, `${lectures[index].link}; console.log("Start playback");`);
+  view.injectJS(channel, `${lectures[index].link}; console.log("Start playback");`);
 };
 
 export function getRemainingLearningTime(learningTime: string): number {
@@ -105,10 +105,12 @@ export function timeChecker(durationInMinutes: number) {
 
   const interval = setInterval(() => {
     if (remainingSeconds <= 0) {
-      console.log("주어진 시간에 도달했습니다!");
+      console.log("The given time has been reached!");
       clearInterval(interval); // 주어진 시간에 도달했으면 타이머를 멈춤
     } else {
-      console.log(`남은 시간: ${Math.floor(remainingSeconds / 60)}분 ${remainingSeconds % 60}초`);
+      console.log(
+        `Remaining time: ${Math.floor(remainingSeconds / 60)}m ${remainingSeconds % 60}s`,
+      );
       remainingSeconds--;
     }
   }, 1000); // 1초에 한번씩 체크
@@ -135,13 +137,13 @@ export const moveLikeHuman = (channel: string) => {
 export const parsePageInfo = (channel: string) => {
   const vars = {
     pageObserver: nanoid(),
-    targetElement: "document.querySelector('.footer-sec .page-btn-sec strong')",
+    targetElement: "document.querySelector('.page-btn-sec')",
   };
   view.injectToPlayer(
     channel,
     vars.pageObserver,
     `
-    console.log("MutationObserver 객체 생성");
+    console.log("MutationObserver: Observer created");
     const ${vars.pageObserver} = new MutationObserver(
       function(mutationsList, observer) {
         for (let mutation of mutationsList) {
@@ -152,7 +154,7 @@ export const parsePageInfo = (channel: string) => {
         }
       };
     );
-    console.log("MutationObserver 감지 시작");
+    console.log("MutationObserver: Start observing");
     ${vars.pageObserver}.observe(
       ${vars.targetElement},
       {
@@ -185,12 +187,12 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
 
         while (true) {
             if (${vars.pauseFlag}) {
-              console.log("[while] 일시정지");
+              console.log("[while] Pause");
               await new Promise(resolve => setTimeout(resolve, 1000));
               continue;
             }
 
-            if (gotoNextPage) {
+            if (typeof gotoNextPage === 'function') {
               // 신강의
               if (gotoNextPage && nowPageNum !== totalPages) {
                 let video = document.querySelector("video");
@@ -224,14 +226,14 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
                 }
                 await new Promise(resolve => setTimeout(resolve, 1000));
               } else if (nowPageNum === totalPages) {
-                console.log("강의끝");
+                console.log("End of lesson");
                 await new Promise(resolve => setTimeout(resolve, 1000));
               }
             } else {
               // 구강의
               const [current, last] = document.querySelector('.footer-sec .page-btn-sec strong').textContent.split('/').map(i => parseInt(i.trim(), 10));
 
-              console.log("[while] 현재페이지/전체페이지: "+current+"/"+last);
+              console.log("[while] Current Page/All Pages: "+current+"/"+last);
 
               if(document.querySelector('.confirm-popup')){
                 document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
@@ -243,7 +245,7 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
               }
 
               if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
-                console.log("[while] 다음 버튼 클릭");
+                console.log("[while] Click the Next button");
                 document.querySelector('.page-btn-sec .next').click();
               }
               document.dispatchEvent(new MouseEvent('mousemove', {
@@ -254,7 +256,7 @@ export const checkAndClickNext = (channel: string, durationInMinutes: number) =>
                 'clientY': ${randomXY()}   // Y 좌표
               }));
 
-              console.log("[while] 10초 대기");
+              console.log("[while] Wait 10 seconds");
               await new Promise(resolve => setTimeout(resolve, 10000));  // 10초 대기
             }
 
@@ -282,7 +284,7 @@ export const justOnce = (channel: string) => {
     async function ${vars.checkAndClickNextFunc}() {
         while (true) {
             if (${vars.pauseFlag}) {
-              console.log("[while] 일시정지");
+              console.log("[while] Pause");
               await new Promise(resolve => setTimeout(resolve, 1000));
               continue;
             }
@@ -293,7 +295,7 @@ export const justOnce = (channel: string) => {
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 gotoNextPage();
               } else if (nowPageNum === totalPages) {
-                console.log("강의끝");
+                console.log("End of lesson");
                 await new Promise(resolve => setTimeout(resolve, 2000));
                 window.close();
               }
@@ -301,7 +303,7 @@ export const justOnce = (channel: string) => {
               // 구강의
               const [current, last] = document.querySelector('.footer-sec .page-btn-sec strong').textContent.split('/').map(i => parseInt(i.trim(), 10));
 
-              console.log("[while] 현재페이지/전체페이지: "+current+"/"+last);
+              console.log("[while] Current Page/All Pages: "+current+"/"+last);
 
               if(document.querySelector('.confirm-popup')){
                 document.querySelector('.btn-group') && document.querySelector('.btn-group').querySelector('.btn.vjs-control.btn-submit').click();
@@ -313,11 +315,11 @@ export const justOnce = (channel: string) => {
               }
 
               if (window.getComputedStyle(document.querySelector('.page-btn-sec .next')).display !== 'none' && current !== last) {
-                console.log("[while] 다음 버튼 클릭");
+                console.log("[while] Click the Next button");
                 document.querySelector('.page-btn-sec .next').click();
               }
 
-              console.log("[while] 2초 대기");
+              console.log("[while] Wait 2 seconds");
               await new Promise(resolve => setTimeout(resolve, 2000));  // 10초 대기
             }
 
