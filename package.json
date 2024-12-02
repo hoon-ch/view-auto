@@ -83,7 +83,7 @@
     "unplugin-auto-expose": "0.0.5",
     "vite": "4.5.0",
     "vite-plugin-svgr": "4.1.0",
-    "vitest": "0.34.6",
+    "vitest": "2.1.8",
     "vitest-dom": "0.1.1",
     "zod": "3.22.4"
   },
